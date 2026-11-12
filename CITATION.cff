@@ -5,6 +5,8 @@ type: software
 authors:
   - family-names: Pathak
     given-names: Purnima
+  - family-names: Upadhyay
+    given-names: Akshay
 repository-code: "https://github.com/pupa3066/gemma4-agent-track-blind-spots"
 license: Apache-2.0
 date-released: "2026-11-12"

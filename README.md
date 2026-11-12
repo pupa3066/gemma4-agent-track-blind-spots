@@ -53,6 +53,29 @@ These files were taken unchanged from the project repository pupa3066/context-co
 repository's `benchmark/CURRENT_STATE.md`. Early result files from a local run on a single repository (N=80) and
 notebooks that reimplemented the chunker are not included; the results log explains why they are invalid.
 
+## References and credits
+
+Public work in the Gemma 4 Developer Agent competitions that this repository cites or uses (Kaggle, 2026):
+
+| Work | Used for |
+|---|---|
+| Organizers' getting-started notebook, kaggle.com/code/ryanholbrook/getting-started-gemma-4-developer-agent | The self-test harness's install, model-serving and evaluator cells |
+| zbigniewkirchner, kaggle.com/code/zbigniewkirchner/gemma-4-agent-run-your-agent-locally | The approach of evaluating agents locally on published tasks |
+| honghanhhh, kaggle.com/code/honghanhhh/gemma-4-baseline-lb-0-24, and flexonafft, kaggle.com/code/flexonafft/gemma-4-budget-aware-coding-agent-v2 | The eval_config.yaml budget and sampling settings of the v8 arms |
+| yiyu0716, kaggle.com/code/yiyu0716/g4-v19-complete-harness-source | The run_skill_script calling convention for skill scripts |
+| zzgtylors, kaggle.com/code/zzgtylors/graphloc-end-to-end-gemma-4-agent-skill | Prior BM25 localization skill; noted that the graph tools miss async functions |
+| Prasetya, kaggle.com/code/fabrianivan/gemma-4-swe-agents-three-paradoxes-ca-hgr | Prior audit of the competition code graph |
+| Jain, kaggle.com/code/hitarthjain0/gemma-4-agent-what-took-lb-0-12-0-24 | Report that strong public configurations avoid the graph tools |
+| Maroof, kaggle.com/code/maroofiums/ast-compressed-code-graphs-for-gemma-4-agents | Evidence that the unit of indexing matters |
+| Mobassir, kaggle.com/code/mobassir/why-your-leaderboard-can-t-see-a-3-point-gain | Leaderboard noise |
+| Valiyavalappil et al., Paper Track writeup "Action-Masked LoRA and Empirical Failure Modes in Gemma 4 SWE Agents" | Report that literal search beats the graph tools |
+
+Gloaguen et al. (arXiv:2602.11988) on monolithic repository context files.
+
+## Authors
+
+Purnima Pathak and Akshay Upadhyay.
+
 ## License
 
 Apache License 2.0. See `LICENSE`.
