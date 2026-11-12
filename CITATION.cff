@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this work, please cite it as below."
+title: "What a Code Search Index Cannot See: Coverage, Chunk Length, Missing Async Code"
+type: software
+authors:
+  - family-names: Pathak
+    given-names: Purnima
+repository-code: "https://github.com/pupa3066/gemma4-agent-track-blind-spots"
+license: Apache-2.0
+date-released: "2026-11-12"
+keywords:
+  - code retrieval
+  - coding agents
+  - index coverage
+  - evaluation
+  - Gemma 4
