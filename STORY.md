@@ -23,3 +23,8 @@ skill name with an underscore made every task fail to compile, and the leaderboa
 The experiments, the audit and the agent work use one idea: before trusting a comparison or an index, check what it
 can and cannot see. The index audit tool and the checklist in the writeup turn that into steps anyone can run. The
 pre-registered plan in `research/` carries the same question to agent task success on the competition leaderboard.
+
+After the writeup was submitted, the organizers' own note confirmed the async finding and narrowed its scope: none of
+the scored private tasks touch async code, so the gap matters for the published tasks that teams develop against, not
+for leaderboard scores. The plan was amended before any affected result, and a small-model arm was added for the
+organizers' small-model prize. Each change is dated in the README.

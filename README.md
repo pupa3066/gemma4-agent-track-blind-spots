@@ -53,6 +53,19 @@ These files were taken unchanged from the project repository pupa3066/context-co
 repository's `benchmark/CURRENT_STATE.md`. Early result files from a local run on a single repository (N=80) and
 notebooks that reimplemented the chunker are not included; the results log explains why they are invalid.
 
+## Updates after the writeup (12 November 2026)
+
+The writeup describes tag v1.0-paper. Work after it is on main, each item registered before its result:
+
+| When (MT) | What | Why |
+|---|---|---|
+| 15:45 | 16-task self-tests of C50 (6 of 16) and A0 (5 of 16); no difference from L detected | Complete the four registered arms on published tasks |
+| 15:55 | Results log: m3 share of gap removed is 57% (27 of 47), not 58% | Exact count; the data files were already correct |
+| 16:00 | The organizers' discussion "Note on Code Graphs for Async Functions" (5 October) confirms the async omission and reports that no scored private task touches an async function | The async gap affects published tasks, not leaderboard scores; the writeup cites the note |
+| 16:03 | Results notebook reads tag v1.0-paper by default | It always rebuilds the writeup's figures byte for byte |
+| 16:08 | Plan amendment 1: A0 becomes a negative control on the leaderboard | Follows from the organizers' note |
+| 16:32 to 16:46 | Plan amendments 2 and 3: E4B arms (one change, the model), decision rule, slot schedule, final-pick rule | The organizers' small-model prize for Gemma E2B or E4B |
+
 ## References and credits
 
 Public work in the Gemma 4 Developer Agent competitions that this repository cites or uses (Kaggle, 2026):
