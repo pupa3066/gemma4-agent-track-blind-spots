@@ -67,7 +67,7 @@ The writeup describes tag v1.0-paper. Work after it is on main, each item regist
 | 16:32 to 16:46 | Plan amendments 2 and 3: E4B arms (one change, the model), decision rule, slot schedule, final-pick rule | The organizers' small-model prize for Gemma E2B or E4B |
 | 17:00 | Arm L submitted to the leaderboard (ref 58287913) | Day 1 of the 20-day plan |
 | 17:03 | E4B self-tests on 16 published tasks: L-E4B 2, N-E4B 1 (31B: 4 and 4); E = L-E4B for day 2 | Outcome of amendments 2 and 3, recorded as registered |
-| 17:20 | Defect: in every BM25 arm the skill script ranked its own folder, not the repository (skill scripts run outside the agent's sandbox). The agent comparisons in the writeup's Section 5 and above therefore do not test BM25 or coverage; the retrieval experiments of Sections 3.1 to 3.6 are unaffected. E is withdrawn | Plan amendment 4, recorded before arm L's leaderboard score |
+| 17:09 | Defect: in every BM25 arm the skill script ranked its own folder, not the repository (skill scripts run outside the agent's sandbox). The agent comparisons in the writeup's Section 5 and above therefore do not test BM25 or coverage; the retrieval experiments of Sections 3.1 to 3.6 are unaffected. E is withdrawn | Plan amendment 4, recorded before arm L's leaderboard score |
 
 ## References and credits
 
