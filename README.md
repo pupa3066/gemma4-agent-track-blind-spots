@@ -65,6 +65,8 @@ The writeup describes tag v1.0-paper. Work after it is on main, each item regist
 | 16:03 | Results notebook reads tag v1.0-paper by default | It always rebuilds the writeup's figures byte for byte |
 | 16:08 | Plan amendment 1: A0 becomes a negative control on the leaderboard | Follows from the organizers' note |
 | 16:32 to 16:46 | Plan amendments 2 and 3: E4B arms (one change, the model), decision rule, slot schedule, final-pick rule | The organizers' small-model prize for Gemma E2B or E4B |
+| 17:00 | Arm L submitted to the leaderboard (ref 58287913) | Day 1 of the 20-day plan |
+| 17:03 | E4B self-tests on 16 published tasks: L-E4B 2, N-E4B 1 (31B: 4 and 4); E = L-E4B for day 2 | Outcome of amendments 2 and 3, recorded as registered |
 
 ## References and credits
 
