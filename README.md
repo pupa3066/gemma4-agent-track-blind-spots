@@ -71,6 +71,7 @@ The writeup describes tag v1.0-paper. Work after it is on main, each item regist
 | 19:10 | Corrected localizer (grep inside the sandbox) passes the trace gate: repository paths in 12 and 14 of 16 first outputs. 16 published tasks: G (31B) 5, N 4; G-E4B 1, N-E4B 1; no difference detected | Plan amendment 5; model work continues on branch feat/small-model-e4b |
 | 13 Nov 08:52 | All 129 published tasks: G 30 (0.233) vs N 28 (0.217), p = 0.73; on the 21 async-fix tasks 4 vs 3. Arm L scored 0.17 on the leaderboard | Plan amendment 7, recorded as registered |
 | 13 Nov 23:13 | Registered fastapi replicate (67 tasks): G 14 vs N 15, p = 1.0; the fastapi lead from the 129-task runs did not replicate. Arm G submitted to the leaderboard | Plan amendment 9, recorded as registered |
+| 14 Nov 08:00 | Arm G scored 0.15 on the leaderboard (arm L: 0.17); one replicate each, within reported noise | Leaderboard record |
 
 ## References and credits
 
