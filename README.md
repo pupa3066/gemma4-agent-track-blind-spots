@@ -52,7 +52,7 @@ These files were taken unchanged from the project repository pupa3066/context-co
 21e8dcb, except that the results notebook reads this repository. The results log `benchmark/RESULTS_LOG.md` is that
 repository's `benchmark/CURRENT_STATE.md`. Early result files from a local run on a single repository (N=80) and
 notebooks that reimplemented the chunker are not included; the results log explains why they are invalid.
-Paths in the results log and the pre-registrations that are not in this repository (for example `benchmark/CURRENT_STATE.md`, `benchmark/POWERED_RESULTS.json`, `benchmark/cck_context.py`) refer to that project repository; `benchmark/CURRENT_STATE.md` is the file published here as `benchmark/RESULTS_LOG.md`. The agent prompts keep the organizers' sample prompt verbatim, including its punctuation. Arms added after the writeup (G, W, F and the tiered-context study) are on branch feat/small-model-e4b and in the project repository.
+The results log cites three earlier result files, now included unchanged from commit 21e8dcb: `benchmark/POWERED_RESULTS.json`, `benchmark/CONCEPTUAL_RESULTS.json` and `benchmark/CONCEPTUAL_FAIR_RESULTS.json`. `benchmark/CURRENT_STATE.md` is the file published here as `benchmark/RESULTS_LOG.md`. `benchmark/cck_context.py` is toolkit code, not evidence for the writeup, and stays in the project repository. The agent prompts keep the organizers' sample prompt verbatim, including its punctuation. Arms added after the writeup (G, W, F and the tiered-context study) are on branch feat/small-model-e4b and in the project repository.
 
 ## Updates after the writeup (12 November 2026)
 
