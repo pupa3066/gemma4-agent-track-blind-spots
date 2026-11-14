@@ -16,10 +16,10 @@ Chunk Length, Missing Async Code".
 
 ## Reproduce
 
-- **Every table and figure:** `benchmark/cck_kaggle_results_public.ipynb`. Runs on a Kaggle CPU notebook and reads only
+- **Every table and figure:** `benchmark/rebuild_all_tables_and_figures.ipynb`. Runs on a Kaggle CPU notebook and reads only
   committed result files. Also published as the Kaggle notebook `purnimapathak15/cck-results-public`.
 - **Retrieval experiments:** `benchmark/confound_sweep.py` and `benchmark/conceptual_fair_metrics.py`, run on Kaggle
-  CPU by the `benchmark/cck_kaggle_*.ipynb` notebooks. Each experiment notebook records the commit of the code it ran.
+  CPU by the `benchmark/*.ipynb experiment notebooks` notebooks. Each experiment notebook records the commit of the code it ran.
 - **Harness audit:** `benchmark/harness_audit/async_unique_check.ipynb` with the competition data attached.
 - **Index audit tool for any repository or knowledge base:** `benchmark/kb_index_audit.py`
   (`python benchmark/kb_index_audit.py --root <repo> --policy all --policy md-only --chunker lines8`).
@@ -72,6 +72,22 @@ The writeup describes tag v1.0-paper. Work after it is on main, each item regist
 | 13 Nov 08:52 | All 129 published tasks: G 30 (0.233) vs N 28 (0.217), p = 0.73; on the 21 async-fix tasks 4 vs 3. Arm L scored 0.17 on the leaderboard | Plan amendment 7, recorded as registered |
 | 13 Nov 23:13 | Registered fastapi replicate (67 tasks): G 14 vs N 15, p = 1.0; the fastapi lead from the 129-task runs did not replicate. Arm G submitted to the leaderboard | Plan amendment 9, recorded as registered |
 | 14 Nov 08:00 | Arm G scored 0.15 on the leaderboard (arm L: 0.17); one replicate each, within reported noise | Leaderboard record |
+
+## Names used in this repository
+
+- **The toolkit**: this work grew out of a context-configuration toolkit (repository pupa3066/context-configuration-builder,
+  internal short name CCK). The short name survives only in Kaggle notebook addresses (kaggle.com/code/purnimapathak15/cck-...),
+  in the result files of the toolkit's self-application (`benchmark/kb_selftest/*cckself*`, Section 3.6 of the writeup), and in
+  file paths inside the frozen tag v1.0-paper. Kaggle addresses cannot be renamed without breaking links and outputs.
+- **What each Kaggle notebook did**: `benchmark/KAGGLE_NOTEBOOKS.md` gives every notebook a descriptive name, why it ran and
+  what it showed.
+- **Notebook files**: on main, the experiment notebooks are named by what they test (for example
+  `coverage_sweep_8line_chunks_set1.ipynb`, `chunk_length_best_segment_and_window_probe.ipynb`,
+  `rebuild_all_tables_and_figures.ipynb`). The writeup cites tag v1.0-paper, where the earlier file names
+  (`cck_kaggle_*.ipynb`) remain unchanged.
+- **Agent arms**: L (BM25 skill, which searched its own folder; amendment 4), N (no search step), G (grep over every Python
+  file inside the sandbox), W (G plus 40-line reads), C50 and A0 (BM25 over half the files, BM25 skipping async code), and
+  "-E4B" for the same arm on the small model.
 
 ## References and credits
 
