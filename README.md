@@ -41,7 +41,7 @@ research/                  pre-registrations with dated amendments
 figures/                   the writeup's figures and card image
 ```
 
-Agent configurations: `submission_v81_lexical` (BM25 skill over every file), `submission_v81_noskill`,
+Agent configurations: `submission_v81_lexical` (a BM25 skill meant to search every file; traces later showed it searched only its own folder, amendment 4), `submission_v81_noskill`,
 `submission_v81_cov50` (BM25 over half the files), `submission_v81_noasync` (BM25 blind to async functions),
 `submission_v8_*` (earlier corrected arms) and `submission_v7_lexical` (the arm that scored 0, kept as evidence of the
 skill-name failure).
@@ -52,6 +52,7 @@ These files were taken unchanged from the project repository pupa3066/context-co
 21e8dcb, except that the results notebook reads this repository. The results log `benchmark/RESULTS_LOG.md` is that
 repository's `benchmark/CURRENT_STATE.md`. Early result files from a local run on a single repository (N=80) and
 notebooks that reimplemented the chunker are not included; the results log explains why they are invalid.
+Paths in the results log and the pre-registrations that are not in this repository (for example `benchmark/CURRENT_STATE.md`, `benchmark/POWERED_RESULTS.json`, `benchmark/cck_context.py`) refer to that project repository; `benchmark/CURRENT_STATE.md` is the file published here as `benchmark/RESULTS_LOG.md`. The agent prompts keep the organizers' sample prompt verbatim, including its punctuation. Arms added after the writeup (G, W, F and the tiered-context study) are on branch feat/small-model-e4b and in the project repository.
 
 ## Updates after the writeup (12 November 2026)
 

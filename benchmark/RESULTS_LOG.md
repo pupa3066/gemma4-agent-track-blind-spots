@@ -1,3 +1,5 @@
+> Published copy of the project repository's `benchmark/CURRENT_STATE.md`. File paths below refer to that repository (pupa3066/context-configuration-builder).
+
 # Benchmark Current State
 
 Date: 2026-09-25 (updated with cap sweep and fair-metric results)
