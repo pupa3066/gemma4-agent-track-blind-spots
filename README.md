@@ -73,6 +73,9 @@ The writeup describes tag v1.0-paper. Work after it is on main, each item regist
 | 13 Nov 08:52 | All 129 published tasks: G 30 (0.233) vs N 28 (0.217), p = 0.73; on the 21 async-fix tasks 4 vs 3. Arm L scored 0.17 on the leaderboard | Plan amendment 7, recorded as registered |
 | 13 Nov 23:13 | Registered fastapi replicate (67 tasks): G 14 vs N 15, p = 1.0; the fastapi lead from the 129-task runs did not replicate. Arm G submitted to the leaderboard | Plan amendment 9, recorded as registered |
 | 14 Nov 08:00 | Arm G scored 0.15 on the leaderboard (arm L: 0.17); one replicate each, within reported noise | Leaderboard record |
+| 14 Nov 14:12 | Gold-patch control on all 129 published tasks: 72 are scorable locally; recomputed on them, the 31B agent resolves 37 percent, and G vs N stays 27 vs 26 | Amendment 17; files in benchmark/harness_audit/ |
+| 14 Nov 17:27 | Ranked chunk search inside the sandbox for the small model (R-E4B), 46 scorable tasks: never finding the right file fell from 13 to 5; tasks solved 3 vs 3; tokens +15.8 percent | Amendment 20; the remaining failures are wrong fixes, targeted by RC-E4B (amendment 21) |
+| 14 Nov | Retrieval on real problem statements: 125 competition tasks and all 300 SWE-bench Lite tasks, testing coverage and chunk length on real issues | Registered before results; running |
 
 ## Names used in this repository
 
