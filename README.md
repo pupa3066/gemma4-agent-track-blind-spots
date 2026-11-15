@@ -54,6 +54,11 @@ repository's `benchmark/CURRENT_STATE.md`. Early result files from a local run o
 notebooks that reimplemented the chunker are not included; the results log explains why they are invalid.
 The results log cites three earlier result files, now included unchanged from commit 21e8dcb: `benchmark/POWERED_RESULTS.json`, `benchmark/CONCEPTUAL_RESULTS.json` and `benchmark/CONCEPTUAL_FAIR_RESULTS.json`. `benchmark/CURRENT_STATE.md` is the file published here as `benchmark/RESULTS_LOG.md`. `benchmark/cck_context.py` is toolkit code, not evidence for the writeup, and stays in the project repository. The agent prompts keep the organizers' sample prompt verbatim, including its punctuation. Arms added after the writeup (G, W, F and the tiered-context study) are on branch feat/small-model-e4b and in the project repository.
 
+## Data on Kaggle
+
+All self-test results behind the agent findings, the gold-patch control for the 129 published tasks, and 611 full agent
+traces are published as a Kaggle dataset by the author: https://www.kaggle.com/datasets/purnimapathak15/gemma4-agent-selftest-scorable-tasks-and-traces
+
 ## Our stance, and the evidence for it
 
 **What an index cannot see or read, an agent cannot find.** Coverage and chunk length decide what a retriever returns,
