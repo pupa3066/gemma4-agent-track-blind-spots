@@ -1,3 +1,5 @@
+> Published copy of the project repository's `benchmark/CURRENT_STATE.md`. File paths below refer to that repository (pupa3066/context-configuration-builder).
+
 # Benchmark Current State
 
 Date: 2026-09-25 (updated with cap sweep and fair-metric results)
@@ -124,7 +126,7 @@ Tier-1 header from core/templates/always-on (not personal steering).
 [MEASURED] Runner: conceptual_fair_metrics.py at commit b8cc6d8, run unchanged on Kaggle (CPU) on fresh
 depth-200 clones of requests, click and black. N=240, k=6, bootstrap=1000, bge-small-en-v1.5,
 m3 threshold 0.72. Files: benchmark/SWEEP_cap_1000.json, benchmark/SWEEP_cap_100000.json. Tables are
-rebuilt from these files by benchmark/cck_kaggle_results_public.ipynb.
+rebuilt from these files by benchmark/rebuild_all_tables_and_figures.ipynb.
 
 | Cap | m1 BM25 | m1 Semantic | m2 BM25 | m2 Semantic | m3 BM25 | m3 Semantic |
 |-----|---------|-------------|---------|-------------|---------|-------------|
@@ -148,7 +150,7 @@ metrics; only the dense ranking uses numpy, verified identical to the committed 
 SWEEP_cap_*.json). Kaggle CPU, N=240 per repository set, k=6, bge-small-en-v1.5 unless noted, bootstrap 1000
 (10,000 for the equivalence test). Repository commits: requests 3c7baaa, click 8abb77a, black b4f1fca,
 flask 49943b5, httpx b5addb6, rich 3a109cc. Every table below is rebuilt by
-benchmark/cck_kaggle_results_public.ipynb.
+benchmark/rebuild_all_tables_and_figures.ipynb.
 
 Coverage, paired (8-line chunks). BM25 minus dense, m1, with exact McNemar on discordant questions:
 
