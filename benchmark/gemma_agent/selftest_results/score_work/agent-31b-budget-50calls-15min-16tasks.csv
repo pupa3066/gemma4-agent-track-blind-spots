@@ -1,0 +1,17 @@
+agent,task,resolved,patch_chars,tool_calls,exit_code,seconds,error,harness_error
+v81_budget,fastapi_13713,False,879,48,2,908.9,,Agent exceeded session timeout (15.0 min)
+v81_budget,fastapi_14077,True,2442,19,0,157.0,,
+v81_budget,fastapi_14360,False,2592,18,2,523.0,,
+v81_budget,fastapi_14361,False,865,42,2,650.9,,
+v81_budget,fastapi_14372,True,1351,20,0,218.0,,
+v81_budget,fastapi_14485,False,2887,42,2,911.1,,Agent exceeded session timeout (15.0 min)
+v81_budget,fastapi_14986,False,4340,44,1,649.5,,
+v81_budget,fastapi_5624,False,883,8,1,936.1,,Agent exceeded session timeout (15.0 min)
+v81_budget,rich_2725,True,1098,17,0,256.7,,
+v81_budget,rich_3064,False,853,24,1,456.7,,
+v81_budget,rich_3469,False,0,33,-1,903.9,,Agent exceeded session timeout (15.0 min)
+v81_budget,rich_3480,True,874,21,0,726.7,,
+v81_budget,rich_3521,True,549,21,0,863.4,,
+v81_budget,rich_3772,False,1713,50,124,1058.8,,
+v81_budget,rich_3777,True,1501,37,0,342.0,,
+v81_budget,rich_3953,False,1750,33,1,556.1,,

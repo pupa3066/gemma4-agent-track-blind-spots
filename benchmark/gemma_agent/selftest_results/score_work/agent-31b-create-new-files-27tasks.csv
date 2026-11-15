@@ -1,0 +1,28 @@
+agent,task,resolved,patch_chars,tool_calls,exit_code,seconds,error,harness_error
+v81_newfiles,fastapi_15661,False,850,22,2,408.9,,
+v81_newfiles,fastapi_15030,False,1002,17,2,389.2,,
+v81_newfiles,fastapi_15280,False,0,28,-1,485.6,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,fastapi_14978,False,786,11,2,488.3,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,fastapi_14099,False,0,20,-1,483.3,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,fastapi_14262,False,0,28,2,438.2,,
+v81_newfiles,fastapi_14186,False,6470,11,2,486.8,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,rich_3930,False,2828,22,1,483.4,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,fastapi_15800,False,0,28,1,291.7,,
+v81_newfiles,fastapi_14953,False,559,23,2,276.6,,
+v81_newfiles,fastapi_13786,False,5493,23,2,487.3,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,fastapi_13713,False,3440,28,2,336.0,,
+v81_newfiles,fastapi_14077,True,2442,20,0,135.3,,
+v81_newfiles,fastapi_14360,False,2061,17,2,486.2,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,fastapi_14361,False,1234,22,2,359.4,,
+v81_newfiles,fastapi_14372,True,640,18,0,193.4,,
+v81_newfiles,fastapi_14485,False,1312,28,2,384.9,,
+v81_newfiles,fastapi_14986,False,2794,28,1,419.7,,
+v81_newfiles,fastapi_5624,False,1192,19,1,715.9,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,rich_2725,True,608,16,0,281.9,,
+v81_newfiles,rich_3064,False,1355,25,1,505.7,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,rich_3469,False,0,27,-1,481.7,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,rich_3480,False,763,25,124,783.7,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,rich_3521,True,440,11,0,335.1,,
+v81_newfiles,rich_3772,False,1832,27,124,783.3,,Agent exceeded session timeout (8.0 min)
+v81_newfiles,rich_3777,False,0,28,1,289.5,,
+v81_newfiles,rich_3953,False,976,20,1,414.2,,

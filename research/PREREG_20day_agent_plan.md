@@ -310,3 +310,160 @@ p = 1.0. The token prediction is not supported and the 19.1 percent saving seen 
 co-primary (not worse) is not contradicted. Per (c), 18 to 23 Nov keep the G/N alternation; W-E4B and G-E4B are
 not submitted. Not registered and not a result: on the 8 fastapi tasks the saving was -18.9 percent (on rich -0.8).
 Files: benchmark/gemma_agent/selftest_results/selftest56_v81e4b_window.csv and selftest56_v81e4b_grep.csv.
+
+## Amendment 13 (recorded 2026-11-14 11:56 MT, before any result of the runs named here)
+
+On Pupa's instruction, no leaderboard submission and no new Kaggle notebook until the running self-tests are complete:
+the tiered-context study runs (research/PREREG_tiered_context_gemma_harness.md, cck-ctx-monolithic-129 and
+cck-ctx-tiered-129) and then the new-files test below. The N upload armed for 2026-11-15 00:00 UTC was disarmed at
+11:55 MT; that slot is skipped, leaving at most 17. The amendment 12 schedule resumes, in order, from the first slot
+after these self-tests finish.
+New-files arm, registered now, launched only after the current runs: F = submission_v81_grep plus one prompt rule,
+"if the fix needs a new module, example or documentation file, create it with write_file, following the naming of
+existing files in that folder". Motivation (CPU analysis of existing traces): 11 of 129 published tasks need new
+files (8 under fastapi docs_src); G and N created none of them and resolved none, 9 with test-collection errors.
+Test: F vs G on those 11 tasks (primary, exact McNemar, prediction F resolves more) and on the 16-task set (not worse).
+
+## Amendment 14 (recorded 2026-11-14 12:19 MT, before any result of this arm; launched only after the running self-tests, per amendment 13)
+
+CPU analysis of G's 129-task traces (no new runs). Among the 67 fixes in the right file that failed: 57 never ran
+pytest; the agent's patch was a median 2.75 times the gold patch's added lines; 21 skipped other files the gold fix
+changes (89 source files and 24 docs_src examples across those tasks). Observationally, runs that ran pytest resolved
+11 of 21 (0.52) and runs that did not resolved 18 of 89 (0.20); this is not causal, since easier tasks may invite testing.
+Arm V = G plus one rule: "Before submit_patch, run the existing test file for the code you changed
+(pytest <file> -q -x) and fix any failure your change caused; if no test file exists, import the changed module with
+python -c." Test: V vs G on the same 16 published tasks; primary resolved tasks, exact McNemar, prediction V resolves
+more; secondary, share of runs that ran a test. A null is reported as not detected.
+
+## Amendment 15 (recorded 2026-11-14 12:34 MT, before any result of these arms)
+
+Score priority, on Pupa's instruction. The tiered-context runs (cck-ctx-monolithic-129, cck-ctx-tiered-129) were
+stopped at 12:34 MT, unanalysed; they rerun after a quota reset as registered (recommendation R36). This supersedes
+amendment 13's order. Three one-change arms from G, each aimed at a measured failure cause of G's 129-task run:
+- V = submission_v81_verify (amendment 14): test the changed code before submit_patch.
+- F = submission_v81_newfiles (amendment 13): create new files the fix needs.
+- B = submission_v81_budget: eval budget 28 to 50 tool calls, 8 to 15 minutes, 80 to 140 turns (scorer defaults are
+  100 calls and 60 minutes). 42 of G's 99 failures used all 28 calls.
+Self-tests: V and B on the 16-task set; F on the 11 tasks whose gold fix creates files (fastapi_15661, 15030, 15280,
+14978, 14099, 14262, 14186, 15800, 14953, 13786, rich_3930) plus the 16-task set. Each vs G's runs on the same tasks
+(G's 16-task run; G's 129-task results for the 11). Primary: resolved, exact McNemar, prediction arm resolves more.
+Combination rule, fixed now: every arm whose resolved count exceeds G's on its primary set joins one combined arm,
+confirmed on as many tasks as quota allows before any submission. Risk noted: B raises per-task time on the scorer.
+
+## Amendment 16 (recorded 2026-11-14 12:42 MT, before any result of the amendment 15 arms)
+
+From the harness source (swegemma 0.2.11, harness/verification.py), read to explain failures:
+- A task is resolved only if pytest exits 0 on every test file the hidden test patch touches (whole files, not only
+  the new tests), with no failures or errors in the JUnit report and every required test passing. A change that
+  breaks any other test in those files fails the task. Exit code 2 is a collection error, typically a failed import.
+- Before verification the harness drops every agent edit to protected paths: any test_*.py or *_test.py, any .py
+  under a tests, test or testing directory, conftest.py, pyproject.toml, setup.cfg, tox.ini, pytest.ini and .pth
+  files. In G's 129-task run, 28 runs edited protected files (19 unresolved), almost all scratch test files; no gold
+  patch touches a protected path.
+- Our self-test notebooks recorded only the exit code. From now on each run also saves the harness's test output,
+  its error reason and the agent's patch (test_output/ in the notebook output). The V and B self-tests were
+  restarted at 12:45 MT to capture this (about 16 GPU minutes lost); no outcome had been recorded.
+Candidate rule for the combined arm, decided by the amendment 15 rule only if it is tested first: "Edits to test
+files, conftest.py, pyproject.toml, setup.cfg and tox.ini are discarded by the grader; put the whole fix in source
+files, and keep every existing test in the module's test file passing."
+
+## Amendment 17 (recorded 2026-11-14 13:43 MT, before any result of this control)
+
+Gold-patch control, from a senior-review recommendation. In B's self-test, 4 of 10 failures were tests that could
+not import dirty_equals or inline_snapshot, packages absent from the self-test environment and from the organizers'
+wheelhouse, so some self-test failures are unsolvable by any agent. Notebook harness-gold-patch-control-129tasks
+runs the harness's own verify_task, with no model, on every published task twice: with the gold patch and with an
+empty patch. A task is scorable here only if gold resolves and empty does not. From now on every agent self-test rate
+is also reported over scorable tasks, and the failure analysis of amendment 14 is redone on them. Smoke run on 3
+tasks first. Arm outcomes of amendment 15 so far: V 4 of 16, B 6 of 16 vs G 5 (p = 1.0 both); by the registered
+rule B joins the combined arm and V does not; F pending.
+
+### Outcome of amendment 17 (recorded 2026-11-14 14:12 MT)
+
+Gold-patch control on all 129 published tasks, harness verify_task, no model, no errors: the gold patch resolves 75;
+an empty patch resolves 3 (fastapi_14077, fastapi_14851, requests_6644); 72 tasks are scorable (gold passes, empty
+fails): fastapi 29 of 67, rich 43 of 48, requests 0 of 13, httpx 0 of 1. Every earlier agent rate therefore counted
+57 tasks no agent could solve here and 3 tasks any agent solves with no change; G's 30 of 129 included all 3 free
+tasks. Recomputed over the 72 scorable tasks: G 27 vs N 26 (38 vs 36 percent, p = 1.0); fastapi replicate G 12 vs N
+14 of 29 (p = 0.62); B 5 vs G 4 of 9, V 3 vs G 4 of 9 (16-task set). Conclusions are unchanged (no difference
+detected), but the 31B agent resolves about 37 percent of solvable published tasks, not 22 percent. Failure analysis
+on scorable tasks, G: of 45 failures, 3 never found the right file, 6 read it but edited elsewhere, 26 edited the
+right file with a wrong fix (23 never ran pytest), 10 produced no patch. E4B (grep first, 46 scorable of its 56): of 43
+failures, 13 never found the right file (30 percent), 5 edited elsewhere, 25 wrong fixes (1 never ran pytest).
+From now on all self-tests use the 72 scorable tasks as the task set or report rates over them.
+Files: benchmark/harness_audit/gold_patch_control_129.csv, benchmark/harness_audit/scorable_tasks_72.txt.
+
+## Amendment 18 (recorded 2026-11-14 14:46 MT, before any result of this run)
+
+Outcome of F (amendment 15): 0 of 11 new-file tasks for F and for G; F created 0 of the 49 new files the gold fixes add,
+so the rule was not followed; on the 16-task set F 4 vs G 5 (p = 1.0). Only 4 of the 11 new-file tasks are scorable
+locally, so the statement in amendment 14 that these tasks failed because the agent never created the files is
+corrected: 7 of them cannot be solved in this environment. By the amendment 15 rule only B exceeded G, so the combined
+arm is B alone. Confirmation, as that rule requires, on the 72 scorable tasks (benchmark/harness_audit/scorable_tasks_72.txt):
+B vs G, where G is its 129-task run restricted to the same 72 tasks (27 resolved), declared as a non-concurrent
+comparison; primary exact McNemar, prediction B resolves more; a null is reported as not detected. Quota: about 5 GPU
+hours remain before 2026-11-21; B on 72 tasks is estimated at about 3.5 hours. No submission until this result is in
+and Pupa gives the go.
+
+## Amendment 19 (recorded 2026-11-14 15:01 MT, before any result of this run)
+
+Task-grounded retrieval questions. Query: each published task's problem statement (first 4,000 characters). Target:
+the 8-line chunks overlapping the lines the gold patch changes, in existing non-test .py files outside docs_src. All
+eligible tasks (every task whose gold patch edits such a file), not the 38-task subset of the earlier audit.
+Retrievers: committed BM25 over all chunks; dense bge-small-en-v1.5 at full coverage and at 25 percent of chunks;
+the share of questions whose target is in the 25 percent index is recorded. k = 6. CPU only, no model.
+Primary (retrieval): BM25 vs dense at full coverage, paired, exact McNemar and bootstrap interval. Secondary:
+dense full vs dense 25 percent (the coverage effect on real queries).
+Bridge test, computed afterwards from existing agent runs without new runs: on the scorable tasks
+(benchmark/harness_audit/scorable_tasks_72.txt), the association between a BM25 hit and the agent resolving the task,
+separately for 31B (G and N, 129-task runs) and E4B (G-E4B, 56-task run): resolved rate among hits vs misses, Fisher
+exact test, two-sided. Prediction: the association is stronger for E4B than for 31B. Nulls are reported as not detected.
+
+## Amendment 20 (recorded 2026-11-14 15:42 MT, before any result of this arm)
+
+R-E4B = submission_v81e4b_rank: identical to G-E4B except step 0. Instead of a grep, the first call runs a 741-character
+BM25 ranker inside the sandbox through run_command: it splits every non-test Python file into 8-line chunks, scores
+them against keywords taken from the problem statement, and prints the top 10 as file and line ranges. This is the
+writeup's method (full coverage, small chunks) at the agent level, aimed at E4B's measured weakness: on scorable tasks
+G-E4B never found the right file in 13 of 43 failures.
+Gate (3-task smoke run first): the first call is the ranker and prints repository file:line ranges in at least 2 of 3.
+Test: R-E4B vs G-E4B on E4B's 46 scorable tasks of its 56-task set (G-E4B from its 56-task run, declared non-concurrent).
+Primary: resolved, exact McNemar, prediction R-E4B resolves more. Secondary: tasks whose failure is "never found the
+right file" (prediction fewer) and total tokens per task (paired Wilcoxon, prediction fewer). A null is reported as not
+detected. Leaderboard use only if R-E4B resolves more than G-E4B, and only on Pupa's go.
+
+### Amendment 20, smoke-run correction (recorded 2026-11-14 15:52 MT, before any outcome)
+
+The first smoke run (3 tasks) had 0 tool calls: the agent framework fills {name} in the instruction from session state,
+and the ranker's f-string made it look for a variable named p, so the agent never started. The ranker now uses no
+braces (same logic and output); the validator now reads the included prompt and rejects template variables the harness
+cannot fill. The gate and test are unchanged; the smoke run is repeated.
+
+### Amendment 18, run stopped (recorded 2026-11-14 16:19 MT)
+
+On Pupa's decision, B's 72-task confirmation run was stopped at 16:18 MT, unanalysed, so the remaining GPU quota could
+complete R-E4B (amendment 20). Kaggle returns outputs only after a run ends, so no partial results were kept. B is
+rerun in full after the 2026-11-21 quota reset, as registered.
+
+### Outcome of amendment 20 (recorded 2026-11-14 17:29 MT)
+
+R-E4B vs G-E4B on E4B's 46 scorable tasks, no errors. Gate: the ranker's output listed repository chunks in 44 of 46.
+Primary, resolved: 3 vs 3 (each solved 3 the other did not), exact McNemar p = 1.0; not detected.
+Secondary, localization: tasks whose failure is "never found the right file" fell from 13 to 5; tasks in which the agent
+read or edited a file the gold fix changes rose from 33 to 38 of 46 (7 only R-E4B, 2 only G-E4B, exact McNemar p = 0.18).
+Secondary, tokens: median 143,106 vs 113,059 per task, total +15.8 percent, paired Wilcoxon z = +2.23, p = 0.025; the
+prediction (fewer tokens) is contradicted: the ranked search led to more reading. Interpretation, labelled as such:
+better localization did not turn into solved tasks because E4B's remaining failures are wrong fixes (26) in the right
+file. Per the registered rule R-E4B is not submitted.
+File: benchmark/gemma_agent/selftest_results/selftest46_v81e4b_rank.csv.
+
+## Amendment 21 (recorded 2026-11-14 17:52 MT, before any result of this arm)
+
+RC-E4B = submission_v81e4b_rankcheck: identical to R-E4B except one rule before submit_patch: run py_compile on every
+changed file and the module's test file, fix any error the change caused, and submit only when the latest run shows no
+failure the change caused, covering every behavior the issue asks for. Motivation (CPU analysis of R-E4B's 38 non-empty
+failed patches): its own last pytest run was failing at submission in 21; 10 hidden-test failures were syntax,
+indentation, import or name errors; patches were a median 0.3 times the gold patch size. Test: RC-E4B vs R-E4B on the
+same tasks, run in the same environment (Kaggle after the 2026-11-21 quota reset, or a local machine running both arms;
+results from different environments are not pooled). Primary: resolved, exact McNemar, prediction RC-E4B resolves more.
+Secondary: submissions whose own last test run was failing (prediction fewer). A null is reported as not detected.

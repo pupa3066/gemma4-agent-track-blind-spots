@@ -109,8 +109,14 @@ def check_agent(root, cfg, where, seen):
                 continue
             txt = open(sk, encoding="utf-8").read()
             fm = txt.split("---")[1] if txt.startswith("---") and txt.count("---") >= 2 else ""
-            if "name:" not in fm:
-                err(f"{s}/SKILL.md: YAML frontmatter with name: is required")
+            # The harness parses this block with yaml.safe_load and refuses to compile the agent on any error
+            # (an unquoted ": " in a description zeroed a 129-task run, measured 2026-11-14).
+            try:
+                meta = yaml.safe_load(fm) if fm.strip() else None
+            except yaml.YAMLError as e:
+                err(f"{s}/SKILL.md: frontmatter is not valid YAML ({str(e).splitlines()[0]})"); continue
+            if not isinstance(meta, dict) or not meta.get("name") or not meta.get("description"):
+                err(f"{s}/SKILL.md: YAML frontmatter needs name: and description:")
             else:
                 # The harness (google.adk skills Frontmatter) rejects any name that is not lowercase
                 # kebab-case; one underscore makes every task fail to compile (measured 2026-11-12).
@@ -120,6 +126,16 @@ def check_agent(root, cfg, where, seen):
         adapter = cfg.get("adapter")
         if adapter and not os.path.isfile(os.path.join(root, "adapters", adapter, "adapter_model.safetensors")):
             err(f"{where}: adapter {adapter!r} not found under adapters/")
+        # The agent framework fills {name} in the instruction from session state and refuses to start if the
+        # name is unknown (one f-string in a prompt gave 0 tool calls on every task, measured 2026-11-14).
+        ins = cfg.get("instruction")
+        if isinstance(ins, str) and ins.strip().startswith("!include"):
+            inc = os.path.join(root, ins.split(None, 1)[1].strip())
+            ins = open(inc, encoding="utf-8").read() if os.path.isfile(inc) else ""
+        if isinstance(ins, str):
+            bad = sorted(set(re.findall(r"\{([A-Za-z_][A-Za-z0-9_.]*)\}", ins)) - {"problem_description", "hints"})
+            if bad:
+                err(f"{where}: instruction contains template variables the harness cannot fill: {bad}")
         check_gen(cfg.get("generate_content_config"), where)
     for sa in cfg.get("sub_agents") or []:
         if isinstance(sa, dict) and "config_path" in sa:
