@@ -54,6 +54,25 @@ repository's `benchmark/CURRENT_STATE.md`. Early result files from a local run o
 notebooks that reimplemented the chunker are not included; the results log explains why they are invalid.
 The results log cites three earlier result files, now included unchanged from commit 21e8dcb: `benchmark/POWERED_RESULTS.json`, `benchmark/CONCEPTUAL_RESULTS.json` and `benchmark/CONCEPTUAL_FAIR_RESULTS.json`. `benchmark/CURRENT_STATE.md` is the file published here as `benchmark/RESULTS_LOG.md`. `benchmark/cck_context.py` is toolkit code, not evidence for the writeup, and stays in the project repository. The agent prompts keep the organizers' sample prompt verbatim, including its punctuation. Arms added after the writeup (G, W, F and the tiered-context study) are on branch feat/small-model-e4b and in the project repository.
 
+## Our stance, and the evidence for it
+
+**What an index cannot see or read, an agent cannot find.** Coverage and chunk length decide what a retriever returns,
+and comparisons that ignore them crown false winners. Inside a coding agent, full-coverage search over small chunks brings
+localization close to its ceiling; past that point, task success is bounded by the model's ability to write the fix.
+
+| Claim | Evidence | Status |
+|---|---|---|
+| Coverage decides retrieval | Docstring questions, two sets of three repositories: dense retrieval rises from 0.45 and 0.58 to 0.89 as its index goes from 1,000 chunks to everything, while BM25, which always searches everything, stays constant; Holm-adjusted p below 1e-11. Dense finds indexed answers 0.88 to 0.92 of the time at every budget | Holds after correction |
+| The same on real issues | SWE-bench Lite, django, 114 real issues: dense 0.342 at full coverage vs 0.210 at 25 percent (p = 0.006; 0.059 after Holm over 13 tests) | One shard; the registered test pools all shards, still running |
+| Hidden coverage crowns false winners | BM25 led dense by 0.20 to 0.53 when dense saw part of the code; within 0.10 on every metric when both saw all of it (paired equivalence tests). The competition's own code index omits all 914 fastapi async functions, confirmed by the organizers | Holds |
+| Chunk length hides code from the embedder | The embedder ignores text past its input window (direct probe); scoring each chunk by its best in-window segment fixes 56 questions and breaks 2 (Holm-adjusted p = 1e-13) | Holds after correction |
+| Full-coverage chunked search reaches near-oracle localization in an agent | Small model (E4B), 46 scorable tasks: never finding the right file fell from 13 to 5 with ranked chunk search, and to 0 when told the files; tasks solved 3 and 4 with ranked search vs 5 when told the files (not distinguishable). The 31B agent misses the right file in 3 of 45 failures | Measured; small N |
+| Beyond localization, the limit is writing the fix | Told exactly which files to change, E4B still fails 41 of 46 tasks: 39 edit the right file with a wrong fix | Measured |
+
+Not supported, and stated as such: a token saving from full-coverage search (31B: -2.7 and +7.0 percent; small model
++15.8 percent), and more solved tasks from retrieval changes alone (every agent comparison p = 0.62 or higher). Details,
+including which tests were registered before their results and the Holm table: `research/RESULTS_LEDGER.md`.
+
 ## Updates after the writeup (12 November 2026)
 
 The writeup describes tag v1.0-paper. Work after it is on main, each item registered before its result:
