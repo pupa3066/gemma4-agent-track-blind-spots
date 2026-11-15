@@ -467,3 +467,35 @@ indentation, import or name errors; patches were a median 0.3 times the gold pat
 same tasks, run in the same environment (Kaggle after the 2026-11-21 quota reset, or a local machine running both arms;
 results from different environments are not pooled). Primary: resolved, exact McNemar, prediction RC-E4B resolves more.
 Secondary: submissions whose own last test run was failing (prediction fewer). A null is reported as not detected.
+
+### Outcome of amendment 21 (recorded 2026-11-14 21:11 MT)
+
+Run by Akshay Upadhyay on his Kaggle quota, version 369731910 of notebook agent-e4b-fix-check-vs-ranked-search-46tasks:
+both arms in the same run, 46 scorable tasks each, no errors.
+Primary, resolved: RC-E4B 5 vs R-E4B 4 (only RC rich_3067 and rich_3535, only R rich_3471), exact McNemar p = 1.0; not
+detected. Secondary, failed submissions whose own last pytest run was failing: R-E4B 15 of 38, RC-E4B 25 of 37; the
+prediction (fewer) is contradicted: the rule made the agent test more, but it still submitted after failing runs.
+Both arms used a median of 11 tool calls of 28, so the budget is not what stops the repair. Run-to-run check: R-E4B
+resolved 3 of these 46 tasks in its earlier run and 4 here. RC-E4B's 5 of 46 is the highest E4B count so far, within noise.
+File: benchmark/gemma_agent/selftest_results/selftest46_e4b_rank_vs_rankcheck.csv.
+
+## Amendment 22 (recorded 2026-11-14 21:29 MT, before any result of this run)
+
+D1, retrieval ceiling for the small model (recommendation R33). Same agent as R-E4B (submission_v81e4b_rank, files
+unchanged); each task's problem statement gets one appended line naming the non-test files its gold patch changes. A
+diagnostic only, never submitted, since the scorer gives no such line. Tasks: E4B's 46 scorable tasks. Comparison:
+R-E4B's two earlier runs on the same tasks (3 and 4 resolved), declared non-concurrent. Primary: resolved with the files
+named. Decision rule fixed now: if D1 resolves 10 or more of 46, the limit includes localization the agent could still
+gain, and the distillation LoRA (R34) is registered and run after the 2026-11-21 reset; if D1 resolves 7 or fewer, the
+limit is fix-writing by the model, and the LoRA is not run on the current data (37 tasks, 7 repair examples); 8 or 9 is
+reported as inconclusive. Run by Akshay Upadhyay on his Kaggle quota, as in amendment 21.
+
+### Outcome of amendment 22 (recorded 2026-11-14 23:21 MT)
+
+D1 run by Akshay Upadhyay on his Kaggle quota; the files line reached the agent in 46 of 46 task messages; no errors, no
+zero-tool-call runs. Primary: told which files the fix changes, E4B resolved 5 of 46 (R-E4B, not told: 3 and 4 in two
+runs; vs run 1, 3 only D1 and 1 only R, p = 0.62; vs run 2, 2 and 1, p = 1.0). Failures: 39 edited the right file with a
+wrong fix, 2 produced no patch, none failed to find the right file. By the registered rule (7 or fewer), the small model's
+limit is writing the fix, not finding it: even perfect localization adds at most about one task, and the distillation
+LoRA is not run on the current data.
+File: benchmark/gemma_agent/selftest_results/selftest46_e4b_retrieval_ceiling_d1.csv.
