@@ -499,3 +499,76 @@ wrong fix, 2 produced no patch, none failed to find the right file. By the regis
 limit is writing the fix, not finding it: even perfect localization adds at most about one task, and the distillation
 LoRA is not run on the current data.
 File: benchmark/gemma_agent/selftest_results/selftest46_e4b_retrieval_ceiling_d1.csv.
+
+### Outcome of amendment 18 (recorded 2026-11-15 01:17 MT)
+
+B on the 72 scorable tasks, run by Akshay Upadhyay on his Kaggle quota; no errors, no zero-tool-call runs.
+Primary: B resolved 30 vs G 27 (G from its 129-task run, declared non-concurrent); 6 only B, 3 only G; exact McNemar
+p = 0.51; not detected. Mechanism: runs that used every tool call fell from 18 to 10 and runs with no patch from 10 to 4;
+median time per task 9.5 vs 6.5 minutes, longest 20.1 minutes, 2 verification timeouts vs 1. B's total task time was
+643 minutes for 72 tasks, about 2.7 hours at 4 in parallel; on 58 hidden tasks that is about 2.2 hours, so runtime is
+not expected to fail the scorer. B is the strongest 31B arm measured, within noise of G.
+File: benchmark/gemma_agent/selftest_results/selftest72_v81_budget.csv.
+
+## Amendment 23 (recorded 2026-11-15 01:22 MT, before the leaderboard result)
+
+On Pupa's go, arm B (submission_v81_budget, sha256 prefix e5defcd7def3510b, byte-identical to the files self-tested
+on 72 scorable tasks) takes the 2026-11-15 UTC leaderboard slot. Basis: B 30 vs G 27 of 72 (p = 0.51), the strongest
+31B arm measured; runtime on the scorer estimated at about 2.2 hours. Comparison on the hidden set: G 0.15, L 0.17.
+A single score is within reported noise of about two tasks of 58; no difference will be inferred from one replicate.
+
+### Outcome of amendment 19 (recorded 2026-11-15 09:40 MT)
+
+Task-grounded retrieval on 125 competition tasks (eligible: gold patch edits an existing non-test .py file), k = 6.
+Hit rates: BM25 0.184 [0.112, 0.256]; dense full 0.312 [0.232, 0.392]; dense at 25 percent 0.248 [0.176, 0.320]; the
+answer was in the 25 percent index for 0.680. Primary, BM25 vs dense at full coverage: 10 vs 26 discordant, exact
+McNemar p = 0.011, dense leads, as on SWE-bench Lite django. Secondary, coverage: dense full vs 25 percent, 17 vs 9,
+p = 0.17: same direction as django, not significant at this N. Bridge test, on scorable tasks, Fisher exact two-sided,
+resolved when retrieval hit vs miss: 31B grep-first with a BM25 hit 4 of 8 vs 22 of 61 (p = 0.46), with a dense hit 6 of
+17 vs 20 of 52 (p = 1.0); E4B with a BM25 hit 0 of 3 vs 3 of 43 (p = 1.0), with a dense hit 1 of 12 vs 2 of 34 (p = 1.0).
+The prediction (stronger association for E4B than 31B) is not supported; a retrieval hit on the problem statement
+does not predict a solved task for either model at these sample sizes.
+SWE-bench Lite shards: sympy stopped at 39 of 77 tasks and scientific-libs at 40 of 61 (session cancelled);
+partial results are saved in benchmark/swebench_lite/ and are not pooled until the shards are completed.
+Files: benchmark/harness_audit/TASK_GROUNDED_retrieval.json.
+
+### Outcome of amendment 23 (recorded 2026-11-15 20:10 MT)
+
+Submission 58376497 (arm B) received no score. Scorer message: the submission exceeded the allowed runtime. The
+competition allows 12 hours for the agent to submit patches for all hidden tasks, including sandbox setup. The
+estimate in the amendment 18 outcome (about 2.2 hours) assumed 58 hidden tasks and 4 tasks in parallel; neither number
+is published, and the estimate was wrong. Arms L and G (8 minutes, 28 tool calls, 80 turns per task) finished; B
+(15 minutes, 50 calls, 140 turns; self-test mean 8.9 vs 6.2 minutes per task for G) did not. No hidden-set comparison
+of B is possible. Gate added: benchmark/gemma_agent/validate_submission.py now rejects any eval_config.yaml budget above
+the largest that finished on the scorer. Best leaderboard score stays 0.17 (arm L).
+
+### Outcome of amendment 10 (recorded 2026-11-16 13:29 MT)
+
+Not completed; no result exists. Training run 1 failed before training: the base image's transformers 5.0.0 has no
+Gemma 4 support (fixed with the organizers' wheelhouse, 5.13.1). Run 2 was queued on 2026-11-14 (commit 088294b) and
+the LoRA work was paused at 08:56 MT that day to give the GPU quota to the amendment 12 replication. The training
+notebook (cck-e4b-lora-train) is no longer on the account, no adapter was kept, and the gate and the test never ran.
+Amendment 22's rule (D1 resolved 5, so no LoRA on the current 37-task data) then stood. A new LoRA design with
+external training data is registered separately in a later amendment after a data audit; it states which
+parts of amendment 10 it reuses.
+
+## Amendment 24 (recorded 2026-11-16 14:39 MT): analysis rules for all later tests
+
+Reason: none of the 20 registered agent tests detected a difference, several used controls from a different run, and
+the Holm families were chosen after the results (research/RESULTS_LEDGER.md, Holm section). From now on:
+1. Families, declared now. Retrieval family: the pooled SWE-bench Lite tests (coverage; BM25 vs dense at full
+   coverage) and the registered equal-text chunk-length test. Agent family: every agent test registered after this
+   amendment. Holm is applied within each family and, as before, across all primary tests; both are reported.
+2. Detectable effect stated before any agent run. With exact McNemar, two-sided, p < 0.05 needs at least 6 net wins with
+   no losses, 8 with 1, or 10 with 2, at any task count. Each agent amendment states its expected effect in tasks and
+   runs only if that effect reaches this size, or it uses replicates and says so.
+3. Same-run controls only. Both arms of an agent test run in the same session on the same tasks; results from
+   different runs or environments are not paired.
+4. Scorer runtime. Submission budgets stay within the largest that finished on the scorer (8 minutes, 28 tool calls,
+   80 turns per task), enforced by benchmark/gemma_agent/validate_submission.py.
+5. Scope. The thesis tests are retrieval tests; agent tests are reported as task-completion evidence. A fix-writing
+   LoRA for the small model is prize engineering, outside the thesis, registered separately only after Pupa decides
+   on the training data's terms (SWE-smith trajectories, generated with third-party models; audit in
+   benchmark/gemma_agent/lora/swesmith_audit_result.txt).
+Next thesis work, in order: the equal-text chunk-length analysis and the remaining SWE-bench Lite shards (CPU), then the
+pooled SWE-bench Lite result.

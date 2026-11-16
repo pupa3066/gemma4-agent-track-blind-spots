@@ -54,24 +54,31 @@ repository's `benchmark/CURRENT_STATE.md`. Early result files from a local run o
 notebooks that reimplemented the chunker are not included; the results log explains why they are invalid.
 The results log cites three earlier result files, now included unchanged from commit 21e8dcb: `benchmark/POWERED_RESULTS.json`, `benchmark/CONCEPTUAL_RESULTS.json` and `benchmark/CONCEPTUAL_FAIR_RESULTS.json`. `benchmark/CURRENT_STATE.md` is the file published here as `benchmark/RESULTS_LOG.md`. `benchmark/cck_context.py` is toolkit code, not evidence for the writeup, and stays in the project repository. The agent prompts keep the organizers' sample prompt verbatim, including its punctuation. Arms added after the writeup (G, W, F and the tiered-context study) are on branch feat/small-model-e4b and in the project repository.
 
+## Data on Kaggle
+
+All self-test results behind the agent findings, the gold-patch control for the 129 published tasks, and 611 full agent
+traces are published as a Kaggle dataset by the author: https://www.kaggle.com/datasets/purnimapathak15/gemma4-agent-selftest-scorable-tasks-and-traces
+
 ## Our stance, and the evidence for it
 
 **What an index cannot see or read, an agent cannot find.** Coverage and chunk length decide what a retriever returns,
-and comparisons that ignore them crown false winners. Inside a coding agent, full-coverage search over small chunks brings
-localization close to its ceiling; past that point, task success is bounded by the model's ability to write the fix.
+and comparisons that ignore them crown false winners. Inside a coding agent, finding the code is rarely what fails: the
+measured limit on task completion is writing the fix.
 
 | Claim | Evidence | Status |
 |---|---|---|
 | Coverage decides retrieval | Docstring questions, two sets of three repositories: dense retrieval rises from 0.45 and 0.58 to 0.89 as its index goes from 1,000 chunks to everything, while BM25, which always searches everything, stays constant; Holm-adjusted p below 1e-11. Dense finds indexed answers 0.88 to 0.92 of the time at every budget | Holds after correction |
-| The same on real issues | SWE-bench Lite, django, 114 real issues: dense 0.342 at full coverage vs 0.210 at 25 percent (p = 0.006; 0.059 after Holm over 13 tests) | One shard; the registered test pools all shards, still running |
+| The same on real issues | SWE-bench Lite, django, 114 real issues: dense 0.342 at full coverage vs 0.210 at 25 percent (p = 0.006). 125 competition problem statements: 0.312 vs 0.248 (p = 0.17) | Same direction in both; holds only in a retrieval-only Holm family chosen after the results (0.018), not over all 26 primary tests (0.14). Django is one shard of a pooled test |
+| On real issue text, dense beats BM25 when both see everything | 125 competition tasks: 0.312 vs 0.184 (p = 0.011); django: 0.342 vs 0.228 (p = 0.035) | Holds only in the post hoc retrieval family. Coverage, not lexical matching, is what decides |
 | Hidden coverage crowns false winners | BM25 led dense by 0.20 to 0.53 when dense saw part of the code; within 0.10 on every metric when both saw all of it (paired equivalence tests). The competition's own code index omits all 914 fastapi async functions, confirmed by the organizers | Holds |
 | Chunk length hides code from the embedder | The embedder ignores text past its input window (direct probe); scoring each chunk by its best in-window segment fixes 56 questions and breaks 2 (Holm-adjusted p = 1e-13) | Holds after correction |
-| Full-coverage chunked search reaches near-oracle localization in an agent | Small model (E4B), 46 scorable tasks: never finding the right file fell from 13 to 5 with ranked chunk search, and to 0 when told the files; tasks solved 3 and 4 with ranked search vs 5 when told the files (not distinguishable). The 31B agent misses the right file in 3 of 45 failures | Measured; small N |
-| Beyond localization, the limit is writing the fix | Told exactly which files to change, E4B still fails 41 of 46 tasks: 39 edit the right file with a wrong fix | Measured |
+| Ranked chunk search helps the small model find the code | E4B, 46 scorable tasks: never finding the right file fell from 13 to 5 with ranked 8-line chunk search, and to 0 when told the files; runs that read or edited a gold file rose from 33 to 38 | Same direction; not significant (p = 0.18) |
+| Beyond localization, the limit is writing the fix | 31B, 45 failures on scorable tasks: 3 never found the right file, 26 wrote a wrong fix in it. Told exactly which files to change, E4B still fails 41 of 46: 39 edit the right file with a wrong fix. A retrieval hit on the problem statement does not predict a solved task (Fisher p = 0.46 to 1.0) | Measured |
 
 Not supported, and stated as such: a token saving from full-coverage search (31B: -2.7 and +7.0 percent; small model
-+15.8 percent), and more solved tasks from retrieval changes alone (every agent comparison p = 0.62 or higher). Details,
-including which tests were registered before their results and the Holm table: `research/RESULTS_LEDGER.md`.
++15.8 percent, p = 0.025, against the prediction), and more solved tasks from any agent change (every comparison of solved
+tasks p = 0.51 or higher; the largest net difference was 3 tasks). Details, including which tests were registered before
+their results and the Holm table over all 26 primary tests: `research/RESULTS_LEDGER.md`.
 
 ## Updates after the writeup (12 November 2026)
 
@@ -94,7 +101,13 @@ The writeup describes tag v1.0-paper. Work after it is on main, each item regist
 | 14 Nov 08:00 | Arm G scored 0.15 on the leaderboard (arm L: 0.17); one replicate each, within reported noise | Leaderboard record |
 | 14 Nov 14:12 | Gold-patch control on all 129 published tasks: 72 are scorable locally; recomputed on them, the 31B agent resolves 37 percent, and G vs N stays 27 vs 26 | Amendment 17; files in benchmark/harness_audit/ |
 | 14 Nov 17:27 | Ranked chunk search inside the sandbox for the small model (R-E4B), 46 scorable tasks: never finding the right file fell from 13 to 5; tasks solved 3 vs 3; tokens +15.8 percent | Amendment 20; the remaining failures are wrong fixes, targeted by RC-E4B (amendment 21) |
-| 14 Nov | Retrieval on real problem statements: 125 competition tasks and all 300 SWE-bench Lite tasks, testing coverage and chunk length on real issues | Registered before results; running |
+| 14 Nov | Retrieval on real problem statements: 125 competition tasks and all 300 SWE-bench Lite tasks, testing coverage and chunk length on real issues | Registered before results |
+| 14 Nov 21:11 | Fix check before submit for the small model (RC-E4B): 5 vs 4 of 46, p = 1.0; submissions after a failing own test rose from 15 to 25 | Amendment 21 |
+| 14 Nov 23:21 | Small model told the gold files (D1): 5 of 46; 39 failures are wrong fixes in the right file | Amendment 22; the limit is writing the fix |
+| 15 Nov 01:17 | Larger budget (B) vs G, 72 scorable tasks: 30 vs 27, p = 0.51 | Amendment 18 |
+| 15 Nov 09:40 | 125 competition tasks: dense beats BM25 at full coverage (p = 0.011); coverage 0.312 vs 0.248 (p = 0.17); a retrieval hit does not predict a solved task. SWE-bench Lite django: coverage p = 0.006, dense beats BM25 p = 0.035; other shards incomplete | Amendment 19 and the SWE-bench Lite registration; files in benchmark/harness_audit/ and benchmark/swebench_lite/ |
+| 15 Nov 20:10 | Arm B on the leaderboard exceeded the 12-hour runtime limit and received no score. The submission validator now rejects budgets above the largest that finished (8 minutes, 28 calls, 80 turns per task) | Amendment 23 outcome |
+| 16 Nov | Holm recomputed over all 26 primary tests (three hold: both docstring coverage tests and chunk length). Analysis rules for later tests: families declared in advance, detectable effect stated before each agent run, same-run controls only | Amendment 24; research/holm_primary_tests.py |
 
 ## Names used in this repository
 
