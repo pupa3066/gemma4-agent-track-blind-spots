@@ -109,8 +109,14 @@ def check_agent(root, cfg, where, seen):
                 continue
             txt = open(sk, encoding="utf-8").read()
             fm = txt.split("---")[1] if txt.startswith("---") and txt.count("---") >= 2 else ""
-            if "name:" not in fm:
-                err(f"{s}/SKILL.md: YAML frontmatter with name: is required")
+            # The harness parses this block with yaml.safe_load and refuses to compile the agent on any error
+            # (an unquoted ": " in a description zeroed a 129-task run, measured 2026-11-14).
+            try:
+                meta = yaml.safe_load(fm) if fm.strip() else None
+            except yaml.YAMLError as e:
+                err(f"{s}/SKILL.md: frontmatter is not valid YAML ({str(e).splitlines()[0]})"); continue
+            if not isinstance(meta, dict) or not meta.get("name") or not meta.get("description"):
+                err(f"{s}/SKILL.md: YAML frontmatter needs name: and description:")
             else:
                 # The harness (google.adk skills Frontmatter) rejects any name that is not lowercase
                 # kebab-case; one underscore makes every task fail to compile (measured 2026-11-12).
@@ -120,6 +126,16 @@ def check_agent(root, cfg, where, seen):
         adapter = cfg.get("adapter")
         if adapter and not os.path.isfile(os.path.join(root, "adapters", adapter, "adapter_model.safetensors")):
             err(f"{where}: adapter {adapter!r} not found under adapters/")
+        # The agent framework fills {name} in the instruction from session state and refuses to start if the
+        # name is unknown (one f-string in a prompt gave 0 tool calls on every task, measured 2026-11-14).
+        ins = cfg.get("instruction")
+        if isinstance(ins, str) and ins.strip().startswith("!include"):
+            inc = os.path.join(root, ins.split(None, 1)[1].strip())
+            ins = open(inc, encoding="utf-8").read() if os.path.isfile(inc) else ""
+        if isinstance(ins, str):
+            bad = sorted(set(re.findall(r"\{([A-Za-z_][A-Za-z0-9_.]*)\}", ins)) - {"problem_description", "hints"})
+            if bad:
+                err(f"{where}: instruction contains template variables the harness cannot fill: {bad}")
         check_gen(cfg.get("generate_content_config"), where)
     for sa in cfg.get("sub_agents") or []:
         if isinstance(sa, dict) and "config_path" in sa:
@@ -140,6 +156,28 @@ def check_ref(root, rel, where, seen):
         return
     seen.add(p)
     check_agent(root, load_yaml(root, p), rel, seen)
+
+
+# Scorer runtime gate. The scorer allows 12 hours for all hidden tasks, including sandbox setup.
+# Arms L and G (8 min, 28 calls, 80 turns per task) finished on the scorer; arm B (15 min, 50 calls,
+# 140 turns; self-test mean 8.9 min per task vs 6.2 for G) exceeded the limit and got no score
+# (submission 58376497). Budgets above the largest ones that finished are rejected.
+SCORER_PASSED_CAPS = {"max_time_minutes": 8, "max_tool_calls": 28, "max_turns": 80}
+
+
+def check_runtime(root):
+    p = os.path.join(root, "eval_config.yaml")
+    if not os.path.isfile(p):
+        err("eval_config.yaml missing: per-task budget unknown, scorer runtime cannot be checked")
+        return
+    ev = (yaml.safe_load(open(p)) or {}).get("evaluation") or {}
+    for k, cap in SCORER_PASSED_CAPS.items():
+        v = ev.get(k)
+        if v is None:
+            err(f"eval_config.yaml: {k} not set (scorer default unknown; largest that finished is {cap})")
+        elif v > cap:
+            err(f"eval_config.yaml: {k}={v} > {cap}, the largest that finished within the scorer's "
+                f"12-hour limit (B at 15 min/50 calls/140 turns exceeded it)")
 
 
 def main():
@@ -166,6 +204,7 @@ def main():
     if len(roots) == 1:
         rp = os.path.join(root, roots[0])
         check_agent(root, load_yaml(root, rp), roots[0], {rp})
+    check_runtime(root)
     if errors:
         print("INVALID:")
         for e in errors:
