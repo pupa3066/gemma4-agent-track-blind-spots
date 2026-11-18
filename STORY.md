@@ -32,7 +32,8 @@ published tasks.
   (families declared in advance, detectable effect stated first, same-session controls).
 - 16 to 18 November: the retrieval findings were rerun on all 300 SWE-bench Lite issues. Coverage and the chunk-length
   effect replicated on real issues.
-- 17 November: arm N was submitted after a pre-submission smoke test; it waited in the scoring queue for more than a day.
+- 17 to 18 November: arm N was submitted after a pre-submission smoke test and scored 0.17 after about 21 hours in the
+  scoring queue, the same as arm L; arm G took the next slot.
 
 ## What held
 
