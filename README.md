@@ -109,7 +109,7 @@ The writeup describes tag v1.0-paper. Work after it is on main, each item regist
 | 15 Nov 09:40 | 125 competition tasks: dense beats BM25 at full coverage (p = 0.011); coverage 0.312 vs 0.248 (p = 0.17); a retrieval hit does not predict a solved task. SWE-bench Lite django: coverage p = 0.006, dense beats BM25 p = 0.035; other shards incomplete | Amendment 19 and the SWE-bench Lite registration; files in benchmark/harness_audit/ and benchmark/swebench_lite/ |
 | 15 Nov 20:10 | Arm B on the leaderboard exceeded the 12-hour runtime limit and received no score. The submission validator now rejects budgets above the largest that finished (8 minutes, 28 calls, 80 turns per task) | Amendment 23 outcome |
 | 16 Nov | Holm recomputed over all 26 primary tests (three hold: both docstring coverage tests and chunk length). Analysis rules for later tests: families declared in advance, detectable effect stated before each agent run, same-run controls only | Amendment 24; research/holm_primary_tests.py |
-| 17 Nov | Arm N submitted after a pre-submission smoke test passed 4 of 4 (ref 58483761) | Amendment 25 |
+| 17 Nov | Arm N submitted after a pre-submission smoke test passed 4 of 4 (ref 58483761); it scored 0.17, the same as arm L | Amendment 25 |
 | 18 Nov | SWE-bench Lite, all 300 issues: coverage and equal-text chunk length hold after Holm over 27 primary tests; the 193 tasks run twice reproduce exactly | SWE-bench Lite pooled outcome; benchmark/swebench_lite/ |
 
 ## Names used in this repository
