@@ -572,3 +572,54 @@ the Holm families were chosen after the results (research/RESULTS_LEDGER.md, Hol
    benchmark/gemma_agent/lora/swesmith_audit_result.txt).
 Next thesis work, in order: the equal-text chunk-length analysis and the remaining SWE-bench Lite shards (CPU), then the
 pooled SWE-bench Lite result.
+
+## Amendment 25 (recorded 2026-11-16 22:49 MT, before this submission)
+
+Slot of 2026-11-17 UTC, by the registered schedule: amendment 12 (c) gives N, G, N from its first slot; the N slot of
+15 Nov was skipped (amendment 13) and that day went to B (amendment 23), so the next slot in order is N. Arm N =
+submission_v81_noskill, the official sample prompt with no search step; its four files are byte-identical (SHA-256) to
+those self-tested in cck-all129-noskill (26 of 72 scorable tasks). Budget 8 minutes, 28 tool calls, 80 turns per task,
+the largest that finished on the scorer (amendment 24, rule 4); the validator passes. Zip sha256 prefix ccebd7de700cfb6c,
+one root agent.yaml, one model line. Pre-submission smoke test (4 scorable tasks N solved before, notebook
+agent-31b-arm-n-zip-smoke-4tasks-pinned-env, run on a teammate's GPU quota): pass = every task makes tool calls and a
+non-empty patch, no errors. Submitted only if the smoke test passes and Pupa says go. Purpose: the first hidden-set score
+of N, a replicate against G 0.15 and L 0.17 (L was effectively N plus one uninformative skill call). One score is within
+reported noise (about 2 tasks of 58; other teams report identical bundles ranging 0.12 to 0.17), so no difference
+will be inferred from it.
+
+## Amendment 26 (recorded 2026-11-17 11:57 MT, before any run of this arm)
+
+Edit-deadline arm ED = submission_v81_editby15: arm N plus one prompt line in its implementation step, "make your best
+source edit with edit_file by your 15th tool call, even if you are not yet certain; then test and refine it" (wording
+from Pupa), and the agent name. Same budget as N (8 minutes, 28 calls, 80 turns), so the scorer runtime gate holds.
+Motivation (measured): the harness already grades unsubmitted edits on disk, so N's 9 and G's 10 no-patch runs on the 72
+scorable tasks never edited source; forum topic 749198 reports no-edit tasks falling from 25 to 7 under an
+edit-by-call-12 prompt, with solved tasks 26 to 30 in a comparison confounded by nine differences.
+Test: ED vs N on the 72 scorable tasks, both arms in the same session (amendment 24, rule 3), run on a teammate's GPU.
+Primary: resolved, exact McNemar, two-sided; prediction ED resolves more. Expected effect 1 to 3 tasks, below the 6 net
+wins this test needs (amendment 24, rule 2), so a null is expected even if the effect is real and is reported as not
+detected. Secondary: runs with no source change (prediction fewer); tool-call index of the first applied source edit
+(paired Wilcoxon, prediction earlier); runs that change only wrong files (watched, since forcing edits may add them).
+Leaderboard rule, fixed now: ED takes the next slot if it resolves at least as many tasks as N in this run; otherwise G
+does (amendment 12). That is a slot decision, not a claim that ED is better.
+
+### Amendment 25, submission record (recorded 2026-11-17 15:36 MT)
+
+Smoke test passed on a teammate's GPU run of agent-31b-arm-n-zip-smoke-4tasks-pinned-env: 4 of 4 tasks made tool calls
+(11 to 20 steps), produced non-empty source-only patches, and passed their tests (9, 2, 8 and 39 tests). Arm N submitted
+on Pupa's go: ref 58483761, 2026-11-17 22:36 UTC, zip sha256 prefix ccebd7de700cfb6c. The first attempt was refused
+because the file must be named submission.zip; the same bytes were resubmitted under that name. Score pending.
+
+## Amendment 27 (recorded 2026-11-17 17:37 MT, before any E4B leaderboard submission; used only on Pupa's go)
+
+Proposed use of the 2026-11-18 UTC slot: the first small-model entry, replacing that day's G slot of amendment 12 (c).
+Reason: no E2B or E4B submission exists, the small-model prize ranks only those, and a second G score would add one
+degree of freedom to the noise estimate. Arm, by the registered rule "best E4B arm by measured self-test" (R35):
+RC-E4B (submission_v81e4b_rankcheck), 5 of 46 scorable tasks in one run; R-E4B solved 3 and 4 in two runs, G-E4B 3,
+W-E4B 2; no difference is detected (p = 1.0), so the choice rests on the rule, not on evidence that RC-E4B is better.
+Files byte-identical (SHA-256) to those run in agent-e4b-fix-check-vs-ranked-search-46tasks; validator and runtime gate
+pass (8 minutes, 28 calls, 80 turns); measured mean 2.3 minutes per task, below G's 6.2, which finished on the scorer.
+Zip sha256 prefix 694c2049087854d9. No GPU smoke test is possible before the 21 Nov quota reset; the files are the ones
+already run on 46 tasks. Expected hidden-set score, labelled as an estimate: the 31B agent scores about 0.4 times its
+local scorable rate (0.15 to 0.17 vs 0.37), which puts E4B (0.11 locally) near 0.05, consistent with other teams' E4B
+entries (0.01 to 0.10).

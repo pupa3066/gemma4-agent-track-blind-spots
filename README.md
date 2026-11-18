@@ -68,17 +68,18 @@ measured limit on task completion is writing the fix.
 | Claim | Evidence | Status |
 |---|---|---|
 | Coverage decides retrieval | Docstring questions, two sets of three repositories: dense retrieval rises from 0.45 and 0.58 to 0.89 as its index goes from 1,000 chunks to everything, while BM25, which always searches everything, stays constant; Holm-adjusted p below 1e-11. Dense finds indexed answers 0.88 to 0.92 of the time at every budget | Holds after correction |
-| The same on real issues | SWE-bench Lite, django, 114 real issues: dense 0.342 at full coverage vs 0.210 at 25 percent (p = 0.006). 125 competition problem statements: 0.312 vs 0.248 (p = 0.17) | Same direction in both; holds only in a retrieval-only Holm family chosen after the results (0.018), not over all 26 primary tests (0.14). Django is one shard of a pooled test |
-| On real issue text, dense beats BM25 when both see everything | 125 competition tasks: 0.312 vs 0.184 (p = 0.011); django: 0.342 vs 0.228 (p = 0.035) | Holds only in the post hoc retrieval family. Coverage, not lexical matching, is what decides |
+| The same on real issues | SWE-bench Lite, all 300 issues, 12 repositories: dense 0.263 with all code indexed vs 0.143 with a quarter of it (p = 7e-6) | Holds after Holm over all 27 primary tests (0.00017) |
+| On real issue text, dense beats BM25 when both see everything | 125 competition tasks: 0.312 vs 0.184 (p = 0.011); SWE-bench Lite 300 issues: 0.263 vs 0.190 (p = 0.012) | Holds in the family declared in advance; not over all 27 tests (0.24). Coverage, not lexical matching, is what decides |
 | Hidden coverage crowns false winners | BM25 led dense by 0.20 to 0.53 when dense saw part of the code; within 0.10 on every metric when both saw all of it (paired equivalence tests). The competition's own code index omits all 914 fastapi async functions, confirmed by the organizers | Holds |
 | Chunk length hides code from the embedder | The embedder ignores text past its input window (direct probe); scoring each chunk by its best in-window segment fixes 56 questions and breaks 2 (Holm-adjusted p = 1e-13) | Holds after correction |
+| The chunk-length effect on real issues | SWE-bench Lite 300 issues, equal returned text: dense with 8-line chunks 0.523 vs 400-word chunks 0.377 (p = 2.3e-5); BM25 the other way (0.390 vs 0.447) | Holds after Holm over all 27 primary tests (0.00053); the effect belongs to the embedder |
 | Ranked chunk search helps the small model find the code | E4B, 46 scorable tasks: never finding the right file fell from 13 to 5 with ranked 8-line chunk search, and to 0 when told the files; runs that read or edited a gold file rose from 33 to 38 | Same direction; not significant (p = 0.18) |
 | Beyond localization, the limit is writing the fix | 31B, 45 failures on scorable tasks: 3 never found the right file, 26 wrote a wrong fix in it. Told exactly which files to change, E4B still fails 41 of 46: 39 edit the right file with a wrong fix. A retrieval hit on the problem statement does not predict a solved task (Fisher p = 0.46 to 1.0) | Measured |
 
 Not supported, and stated as such: a token saving from full-coverage search (31B: -2.7 and +7.0 percent; small model
 +15.8 percent, p = 0.025, against the prediction), and more solved tasks from any agent change (every comparison of solved
 tasks p = 0.51 or higher; the largest net difference was 3 tasks). Details, including which tests were registered before
-their results and the Holm table over all 26 primary tests: `research/RESULTS_LEDGER.md`.
+their results and the Holm table over all 27 primary tests: `research/RESULTS_LEDGER.md`.
 
 ## Updates after the writeup (12 November 2026)
 
@@ -108,6 +109,8 @@ The writeup describes tag v1.0-paper. Work after it is on main, each item regist
 | 15 Nov 09:40 | 125 competition tasks: dense beats BM25 at full coverage (p = 0.011); coverage 0.312 vs 0.248 (p = 0.17); a retrieval hit does not predict a solved task. SWE-bench Lite django: coverage p = 0.006, dense beats BM25 p = 0.035; other shards incomplete | Amendment 19 and the SWE-bench Lite registration; files in benchmark/harness_audit/ and benchmark/swebench_lite/ |
 | 15 Nov 20:10 | Arm B on the leaderboard exceeded the 12-hour runtime limit and received no score. The submission validator now rejects budgets above the largest that finished (8 minutes, 28 calls, 80 turns per task) | Amendment 23 outcome |
 | 16 Nov | Holm recomputed over all 26 primary tests (three hold: both docstring coverage tests and chunk length). Analysis rules for later tests: families declared in advance, detectable effect stated before each agent run, same-run controls only | Amendment 24; research/holm_primary_tests.py |
+| 17 Nov | Arm N submitted after a pre-submission smoke test passed 4 of 4 (ref 58483761) | Amendment 25 |
+| 18 Nov | SWE-bench Lite, all 300 issues: coverage and equal-text chunk length hold after Holm over 27 primary tests; the 193 tasks run twice reproduce exactly | SWE-bench Lite pooled outcome; benchmark/swebench_lite/ |
 
 ## Names used in this repository
 
