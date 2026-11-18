@@ -22,7 +22,7 @@ published tasks.
 - 12 to 13 November: the agent comparison in the writeup turned out to be invalid. The BM25 skill ran outside the
   agent's sandbox and searched its own folder; a correction was posted on 14 November. A grep run inside the sandbox replaced it.
   Leaderboard: 0.17 (arm L) and 0.15 (arm G).
-- 14 November: a gold-patch control found that only 72 of the 129 published tasks can be scored locally, as other
+- 14 November: a reference-fix control found that only 72 of the 129 published tasks can be scored locally, as other
   participants had reported earlier; every comparison since uses those 72. Failure analysis: the 31B agent rarely
   misses the file (3 of 45 failures) and mostly writes a wrong fix in the right file (26).
 - 14 to 15 November: small-model (E4B) work. Ranked chunk search cut its file misses from 13 to 5 but did not raise
@@ -55,7 +55,7 @@ broke the runtime limit. The first distillation adapter for the small model was 
 ## What we would do differently
 
 Measure where the agent fails before choosing what to change: the failure analysis came two weeks in, and it showed
-the levers being tested aimed at a problem the 31B agent did not have. Run the gold-patch control on day one. State the
+the levers being tested aimed at a problem the 31B agent did not have. Run the reference-fix control on day one. State the
 detectable effect before every test and run both arms in one session. Check that a whole run fits the scorer's time
 limit before submitting. Use every daily leaderboard slot from the start, because one score varies by two to three
 tasks and the board keeps the best.

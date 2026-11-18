@@ -55,9 +55,9 @@ no losses to reach p < 0.05, and the largest net difference any arm showed was 3
 | Small-model arms (E4B): BM25 skill, grep, shorter prompt, larger reasoning budget | amendments 2, 5, 6, 8 | 1 to 2 of 16 in every arm; no difference detected |
 | Test before submit (V), larger budget (B), new files (F) vs G, 16 tasks | amendments 15 to 18 | V 4, B 6, F 4, G 5 (p = 1.0 each; 9 of the 16 tasks are scorable). F created none of the new files its rule asked for |
 | Larger budget (B) vs G, 72 scorable tasks | amendment 18 | 30 vs 27, p = 0.51, not detected. On the leaderboard B exceeded the 12-hour runtime limit and received no score (amendment 23 outcome) |
-| E4B: ranked 8-line lexical chunk search (R-E4B) vs grep, 46 scorable tasks | amendment 20 | Resolved 3 vs 3, p = 1.0. Read or edited a gold file 38 vs 33, p = 0.18. Tokens +15.8 percent, p = 0.025, against the prediction (secondary) |
+| E4B: ranked 8-line lexical chunk search (R-E4B) vs grep, 46 scorable tasks | amendment 20 | Resolved 3 vs 3, p = 1.0. Read or edited a file the reference fix changes 38 vs 33, p = 0.18. Tokens +15.8 percent, p = 0.025, against the prediction (secondary) |
 | E4B: fix check before submit (RC-E4B) vs R-E4B, same run | amendment 21 | 5 vs 4, p = 1.0; submissions after a failing own test rose from 15 to 25 |
-| E4B told the gold files (D1) | amendment 22 | 5 of 46 (R-E4B 3 and 4); 39 failures were wrong fixes in the right file |
+| E4B told the files the reference fix changes (D1) | amendment 22 | 5 of 46 (R-E4B 3 and 4); 39 failures were wrong fixes in the right file |
 | Distillation LoRA for E4B | amendment 10 | Not completed; no result (amendment 10 outcome) |
 | Tiered vs monolithic repository context | tiered-context registration and amendments 1 and 2 | Paused before any outcome; rerun after a quota reset |
 
@@ -71,12 +71,12 @@ no losses to reach p < 0.05, and the largest net difference any arm showed was 3
 
 Some published tasks cannot be scored in the self-test environment: tests that import packages absent from it
 (dirty_equals, inline_snapshot) fail with or without a correct fix, and at least one task passes with no fix at all.
-The gold-patch control (amendment 17, notebook harness-gold-patch-control-129tasks) found 72 scorable tasks of 129: the
-gold fix fails on 54 and 3 pass with no fix. Over the 72, G resolves 27 and N 26 (38 vs 36 percent, p = 1.0); conclusions
+The reference-fix control (amendment 17, notebook harness-gold-patch-control-129tasks) found 72 scorable tasks of 129: the
+reference fix fails on 54 and 3 pass with no fix. Over the 72, G resolves 27 and N 26 (38 vs 36 percent, p = 1.0); conclusions
 are unchanged, and the 31B agent solves about 37 percent of solvable tasks. Failures of G on scorable tasks: 3 of 45
 never found the right file; for E4B, 13 of 43 (30 percent).
 
-## What we learned about our local self-test (from the gold-patch control)
+## What we learned about our local self-test (from the reference-fix control)
 
 - Our local self-test runs published tasks, while the leaderboard scores hidden tasks from other repositories. We now
   think the two are best compared only arm against arm on the same tasks: on the published tasks that can be scored
@@ -85,12 +85,12 @@ never found the right file; for E4B, 13 of 43 (30 percent).
   those 16 tasks cannot be scored in our local environment, so we would no longer draw that comparison.
 - The same 16-task set has 9 scorable tasks, which is too few to say much about the arms tested on it (including V
   and B). Our remaining self-tests use the 72 scorable tasks (benchmark/harness_audit/scorable_tasks_72.txt).
-- As far as we can tell, the gold fix fails on 54 tasks because of our environment rather than the tasks: test
+- As far as we can tell, the reference fix fails on 54 tasks because of our environment rather than the tasks: test
   packages we did not have (inline_snapshot 27, dirty_equals 7), test files whose other tests fail here (18: requests
-  12, rich 4, fastapi 2), and an installed httpx that appears to shadow the repository's (1); in one task (rich_3486) the gold fix itself
-  did not pass a required test. No agent run resolved a task whose gold fix fails.
-- Prior reports. Other participants found these limits first, on the competition forum: gold patches failing for most
-  fastapi and requests tasks because test packages are missing (topic 743973, 28 September); a gold-patch and
+  12, rich 4, fastapi 2), and an installed httpx that appears to shadow the repository's (1); in one task (rich_3486) the reference fix itself
+  did not pass a required test. No agent run resolved a task whose reference fix fails.
+- Prior reports. Other participants found these limits first, on the competition forum: reference patches failing for most
+  fastapi and requests tasks because test packages are missing (topic 743973, 28 September); a reference-patch and
   empty-patch audit of all 129 tasks with 68 valid (Manohar Papasani, 2026, Kaggle forum topic 756400, 6 November); the
   missing inline_snapshot and dirty_equals packages (34 tasks) and an httpbin fixture behind 12 psf/requests failures,
   with a ceiling of 74 of 129 (larry54321zhao, 2026, Kaggle forum topic 757661, 10 November); and harness conventions
@@ -126,7 +126,7 @@ Family 1, primary: every primary test with an outcome (m = 27). Five hold.
 | Tokens, 40-line windows (W) vs G, 31B, 16 tasks | 0.47 | 1 | no |
 | Larger budget (B) vs G, 72 scorable tasks | 0.51 | 1 | no |
 | G vs N, fastapi replicate, 29 scorable tasks | 0.62 | 1 | no |
-| E4B told the gold files (D1) vs R-E4B run 1, 46 tasks | 0.62 | 1 | no |
+| E4B told the files the reference fix changes (D1) vs R-E4B run 1, 46 tasks | 0.62 | 1 | no |
 | Tokens, 40-line windows vs grep, E4B, 56 tasks (replication) | 0.74 | 1 | no |
 | BM25 skill vs no skill, 16 tasks (skill later found defective) | 1 | 1 | no |
 | Grep first (G) vs no search step (N), 16 tasks | 1 | 1 | no |

@@ -109,7 +109,7 @@ developer-written context files elsewhere.
 
 To test the writeup's retrieval findings on a standard, model-agnostic benchmark. Queries: the problem statements of
 SWE-bench Lite's 300 test tasks (princeton-nlp/SWE-bench_Lite, 12 Python repositories), first 4,000 characters.
-Repository: each task's base_commit. Target: the 8-line chunks overlapping the lines its gold patch changes, in
+Repository: each task's base_commit. Target: the 8-line chunks overlapping the lines its reference patch changes, in
 existing non-test .py files. Retrievers and code: the committed BM25 and dense retriever (bge-small-en-v1.5), k = 6, as in
 the task-grounded run (research/PREREG_20day_agent_plan.md amendment 19).
 Conditions: (1) coverage: dense at full coverage and at 25 percent of chunks, BM25 over all chunks;
@@ -117,12 +117,12 @@ Conditions: (1) coverage: dense at full coverage and at 25 percent of chunks, BM
 Primary: BM25 vs dense at full coverage (paired, exact McNemar, bootstrap interval); dense full vs dense 25 percent.
 Secondary: the chunk-length conditions. Predictions, from the writeup: dense at 25 percent falls well below dense at
 full coverage while BM25 is unchanged; with 400-word chunks, best-segment scoring raises dense. Nulls are reported as
-not detected. CPU only; a 3-task smoke run first. Tasks whose gold patch edits no existing non-test .py file are excluded
+not detected. CPU only; a 3-task smoke run first. Tasks whose reference patch edits no existing non-test .py file are excluded
 and counted.
 
 ### SWE-bench Lite retrieval, first shard result: django (recorded 2026-11-14 21:04 MT; preliminary until all shards finish)
 
-114 django tasks, none excluded; hit at k = 6 on the 8-line chunks the gold patch changes.
+114 django tasks, none excluded; hit at k = 6 on the 8-line chunks the reference patch changes.
 Coverage (primary): dense full 0.342 [0.263, 0.439] vs dense at 25 percent 0.210 [0.140, 0.289]; 21 vs 6 discordant,
 exact McNemar p = 0.006; BM25, which always searches everything, 0.228. The coverage prediction holds on real issues.
 BM25 vs dense at full coverage (primary): 0.228 vs 0.342; 10 vs 23 discordant, p = 0.035. On real issue text dense leads,
@@ -142,7 +142,7 @@ Primary: dense 8-line at equal text vs dense 400-word whole chunk, exact McNemar
 does at least as well with short chunks at equal text. CPU only; it needs a rerun of the retrieval notebooks that
 records rankings, launched only on Pupa's go. A null is reported as not detected.
 
-### SWE-bench Lite rerun with gold ranks and the equal-text analysis: implementation (recorded 2026-11-16 15:24 MT, before any result)
+### SWE-bench Lite rerun with reference-fix unit ranks and the equal-text analysis: implementation (recorded 2026-11-16 15:24 MT, before any result)
 
 Why a rerun: the sympy and scientific-libs shards stopped at Kaggle's 12-hour session limit (39 of 77 and 40 of 61
 tasks, about 1,050 seconds per task), the dev-tools-and-web shard never ran, and the equal-text analysis needs rankings
@@ -154,7 +154,7 @@ Equal text, defined now: W400 is the number of words in the top 6 whole 400-word
 k_eq is the smallest k whose top k 8-line chunks from the same retriever contain at least W400 words (2 local smoke
 tasks: 1 to 2 percent more words). Primary: dense 8-line at k_eq vs dense 400-word whole chunks at k = 6, exact
 McNemar, two-sided; prediction, from the writeup: short chunks do at least as well at equal text. Secondary: the same
-for BM25, and k from the median words per 8-line chunk (the median reading of the earlier wording). Gold ranks are
+for BM25, and k from the median words per 8-line chunk (the median reading of the earlier wording). Reference-fix unit ranks are
 recorded for every retriever. Holm within the retrieval family of plan amendment 24 (pooled coverage, pooled BM25 vs
 dense, equal text). Pooling: benchmark/swebench_lite/pool_swebench_lite.py (no task twice; reproduction check).
 Runs: 9 CPU notebooks, task slices sized to stay under 9 hours at the measured rate, with a 10.5-hour save-and-stop
