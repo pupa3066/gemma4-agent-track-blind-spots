@@ -56,7 +56,7 @@ The results log cites three earlier result files, now included unchanged from co
 
 ## Data on Kaggle
 
-All self-test results behind the agent findings, the gold-patch control for the 129 published tasks, and 611 full agent
+All self-test results behind the agent findings, the reference-fix control for the 129 published tasks, and 611 full agent
 traces are published as a Kaggle dataset by the author: https://www.kaggle.com/datasets/purnimapathak15/gemma4-agent-selftest-scorable-tasks-and-traces
 
 ## Our stance, and the evidence for it
@@ -73,7 +73,7 @@ measured limit on task completion is writing the fix.
 | Hidden coverage crowns false winners | BM25 led dense by 0.20 to 0.53 when dense saw part of the code; within 0.10 on every metric when both saw all of it (paired equivalence tests). The competition's own code index omits all 914 fastapi async functions, confirmed by the organizers | Holds |
 | Chunk length hides code from the embedder | The embedder ignores text past its input window (direct probe); scoring each chunk by its best in-window segment fixes 56 questions and breaks 2 (Holm-adjusted p = 1e-13) | Holds after correction |
 | The chunk-length effect on real issues | SWE-bench Lite 300 issues, equal returned text: dense with 8-line chunks 0.523 vs 400-word chunks 0.377 (p = 2.3e-5); BM25 the other way (0.390 vs 0.447) | Holds after Holm over all 27 primary tests (0.00053); the effect belongs to the embedder |
-| Ranked chunk search helps the small model find the code | E4B, 46 scorable tasks: never finding the right file fell from 13 to 5 with ranked 8-line chunk search, and to 0 when told the files; runs that read or edited a gold file rose from 33 to 38 | Same direction; not significant (p = 0.18) |
+| Ranked chunk search helps the small model find the code | E4B, 46 scorable tasks: never finding the right file fell from 13 to 5 with ranked 8-line chunk search, and to 0 when told the files; runs that read or edited a file the reference fix changes rose from 33 to 38 | Same direction; not significant (p = 0.18) |
 | Beyond localization, the limit is writing the fix | 31B, 45 failures on scorable tasks: 3 never found the right file, 26 wrote a wrong fix in it. Told exactly which files to change, E4B still fails 41 of 46: 39 edit the right file with a wrong fix. A retrieval hit on the problem statement does not predict a solved task (Fisher p = 0.46 to 1.0) | Measured |
 
 Not supported, and stated as such: a token saving from full-coverage search (31B: -2.7 and +7.0 percent; small model
@@ -100,11 +100,11 @@ The writeup describes tag v1.0-paper. Work after it is on main, each item regist
 | 13 Nov 08:52 | All 129 published tasks: G 30 (0.233) vs N 28 (0.217), p = 0.73; on the 21 async-fix tasks 4 vs 3. Arm L scored 0.17 on the leaderboard | Plan amendment 7, recorded as registered |
 | 13 Nov 23:13 | Registered fastapi replicate (67 tasks): G 14 vs N 15, p = 1.0; the fastapi lead from the 129-task runs did not replicate. Arm G submitted to the leaderboard | Plan amendment 9, recorded as registered |
 | 14 Nov 08:00 | Arm G scored 0.15 on the leaderboard (arm L: 0.17); one replicate each, within reported noise | Leaderboard record |
-| 14 Nov 14:12 | Gold-patch control on all 129 published tasks: 72 are scorable locally; recomputed on them, the 31B agent resolves 37 percent, and G vs N stays 27 vs 26 | Amendment 17; files in benchmark/harness_audit/. The same ceiling, including the empty-patch check, was reported earlier on the forum (topics 743973, 756400, 757661, 751707, 757893); the ledger credits them |
+| 14 Nov 14:12 | Reference-fix control on all 129 published tasks: 72 are scorable locally; recomputed on them, the 31B agent resolves 37 percent, and G vs N stays 27 vs 26 | Amendment 17; files in benchmark/harness_audit/. The same ceiling, including the empty-patch check, was reported earlier on the forum (topics 743973, 756400, 757661, 751707, 757893); the ledger credits them |
 | 14 Nov 17:27 | Ranked chunk search inside the sandbox for the small model (R-E4B), 46 scorable tasks: never finding the right file fell from 13 to 5; tasks solved 3 vs 3; tokens +15.8 percent | Amendment 20; the remaining failures are wrong fixes, targeted by RC-E4B (amendment 21) |
 | 14 Nov | Retrieval on real problem statements: 125 competition tasks and all 300 SWE-bench Lite tasks, testing coverage and chunk length on real issues | Registered before results |
 | 14 Nov 21:11 | Fix check before submit for the small model (RC-E4B): 5 vs 4 of 46, p = 1.0; submissions after a failing own test rose from 15 to 25 | Amendment 21 |
-| 14 Nov 23:21 | Small model told the gold files (D1): 5 of 46; 39 failures are wrong fixes in the right file | Amendment 22; the limit is writing the fix |
+| 14 Nov 23:21 | Small model told the files the reference fix changes (D1): 5 of 46; 39 failures are wrong fixes in the right file | Amendment 22; the limit is writing the fix |
 | 15 Nov 01:17 | Larger budget (B) vs G, 72 scorable tasks: 30 vs 27, p = 0.51 | Amendment 18 |
 | 15 Nov 09:40 | 125 competition tasks: dense beats BM25 at full coverage (p = 0.011); coverage 0.312 vs 0.248 (p = 0.17); a retrieval hit does not predict a solved task. SWE-bench Lite django: coverage p = 0.006, dense beats BM25 p = 0.035; other shards incomplete | Amendment 19 and the SWE-bench Lite registration; files in benchmark/harness_audit/ and benchmark/swebench_lite/ |
 | 15 Nov 20:10 | Arm B on the leaderboard exceeded the 12-hour runtime limit and received no score. The submission validator now rejects budgets above the largest that finished (8 minutes, 28 calls, 80 turns per task) | Amendment 23 outcome |

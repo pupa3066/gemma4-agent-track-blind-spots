@@ -29,7 +29,7 @@ to call the harness search tool first (amendment 6). Every arm below shares the 
    on the same published tasks, drawn with random.Random(0).sample from tasks.jsonl, 32 tasks if GPU quota allows and
    16 otherwise, each arm's eval_config.yaml budget. Each arm must produce patches in the self-test before it is
    submitted. Outcome: resolved per task. Test: exact two-sided McNemar of each arm against L.
-   Secondary analysis: the same test restricted to tasks whose gold patch edits an async function
+   Secondary analysis: the same test restricted to tasks whose reference patch edits an async function
    (benchmark/harness_audit/ task audit), where A0 and N are predicted to lose most.
 2. **Leaderboard (hidden tasks, totals only).** One submission per team per UTC day, starting 2026-11-13.
 
@@ -180,7 +180,7 @@ File: benchmark/gemma_agent/selftest_results/selftest16_v81e4b_short.csv.
 
 Full-set paired test. G and N run with the self-test harness on all 129 published tasks (same budgets, 4 tasks in
 parallel). Primary: G vs N, exact McNemar over 129 paired tasks; prediction G resolves at least as many as N.
-Secondary, fixed now: (a) the 113 tasks outside the 16-task set; (b) the 21 tasks whose gold patch edits an async
+Secondary, fixed now: (a) the 113 tasks outside the 16-task set; (b) the 21 tasks whose reference patch edits an async
 function (benchmark/harness_audit/TASK_AUDIT_all129.json): fastapi_15030, fastapi_14962, fastapi_15023, fastapi_14986, fastapi_14978, fastapi_14099, fastapi_14609, fastapi_14487, fastapi_14306, fastapi_14448, fastapi_14419, fastapi_14262, fastapi_14077, httpx_3672, fastapi_15800, fastapi_14371, fastapi_15745, fastapi_14303, fastapi_13537, fastapi_13786, fastapi_11194. A null is reported as not detected.
 The resolved G trajectories are kept as candidate training data for the E4B distillation LoRA; its held-out split
 is registered before any training.
@@ -189,7 +189,7 @@ is registered before any training.
 
 All 129 published tasks, no errors: G resolved 30 (0.233), N 28 (0.217); 5 only G, 3 only N, exact McNemar
 p = 0.73. Registered subsets: the 113 tasks outside the 16-task set, G 27 vs N 25, 5 vs 3, p = 0.73; the 21 tasks
-whose gold patch edits an async function, G 4 vs N 3, 1 vs 0, p = 1.0. No difference is detected; G is not worse.
+whose reference patch edits an async function, G 4 vs N 3, 1 vs 0, p = 1.0. No difference is detected; G is not worse.
 By repository: fastapi G 18 vs N 14 of 67, rich 11 vs 13 of 48, requests 1 vs 1 of 13, httpx 0 vs 0 of 1.
 Leaderboard: arm L (ref 58287913, the BM25 skill that searched its own folder, amendment 4) scored 0.17 public,
 so a corrected skill name compiles and runs on the scorer and the skill call does not break the agent.
@@ -217,7 +217,7 @@ File: benchmark/gemma_agent/selftest_results/selftest16_v81e4b_think.csv.
 gain was on fastapi (G only 4, N only 0, exact p = 0.125), the repository whose index omits 914 async functions;
 on rich it was G only 1, N only 3. To test that lead, G and N run again with the self-test harness on the 67 fastapi
 published tasks, fresh runs, same arms and budgets. Primary: G vs N on these 67 new paired runs, exact McNemar,
-two-sided; prediction G resolves more. Secondary: the 20 fastapi tasks whose gold patch edits an async function.
+two-sided; prediction G resolves more. Secondary: the 20 fastapi tasks whose reference patch edits an async function.
 The earlier 129-task fastapi results are not pooled into the primary test. A null is reported as not detected.
 
 (b) Leaderboard schedule. L, C50 and A0 are withdrawn (amendment 4). From 2026-11-14 00:00 UTC the daily slots
@@ -327,7 +327,7 @@ Test: F vs G on those 11 tasks (primary, exact McNemar, prediction F resolves mo
 ## Amendment 14 (recorded 2026-11-14 12:19 MT, before any result of this arm; launched only after the running self-tests, per amendment 13)
 
 CPU analysis of G's 129-task traces (no new runs). Among the 67 fixes in the right file that failed: 57 never ran
-pytest; the agent's patch was a median 2.75 times the gold patch's added lines; 21 skipped other files the gold fix
+pytest; the agent's patch was a median 2.75 times the reference patch's added lines; 21 skipped other files the reference fix
 changes (89 source files and 24 docs_src examples across those tasks). Observationally, runs that ran pytest resolved
 11 of 21 (0.52) and runs that did not resolved 18 of 89 (0.20); this is not causal, since easier tasks may invite testing.
 Arm V = G plus one rule: "Before submit_patch, run the existing test file for the code you changed
@@ -344,7 +344,7 @@ amendment 13's order. Three one-change arms from G, each aimed at a measured fai
 - F = submission_v81_newfiles (amendment 13): create new files the fix needs.
 - B = submission_v81_budget: eval budget 28 to 50 tool calls, 8 to 15 minutes, 80 to 140 turns (scorer defaults are
   100 calls and 60 minutes). 42 of G's 99 failures used all 28 calls.
-Self-tests: V and B on the 16-task set; F on the 11 tasks whose gold fix creates files (fastapi_15661, 15030, 15280,
+Self-tests: V and B on the 16-task set; F on the 11 tasks whose reference fix creates files (fastapi_15661, 15030, 15280,
 14978, 14099, 14262, 14186, 15800, 14953, 13786, rich_3930) plus the 16-task set. Each vs G's runs on the same tasks
 (G's 16-task run; G's 129-task results for the 11). Primary: resolved, exact McNemar, prediction arm resolves more.
 Combination rule, fixed now: every arm whose resolved count exceeds G's on its primary set joins one combined arm,
@@ -358,7 +358,7 @@ From the harness source (swegemma 0.2.11, harness/verification.py), read to expl
   breaks any other test in those files fails the task. Exit code 2 is a collection error, typically a failed import.
 - Before verification the harness drops every agent edit to protected paths: any test_*.py or *_test.py, any .py
   under a tests, test or testing directory, conftest.py, pyproject.toml, setup.cfg, tox.ini, pytest.ini and .pth
-  files. In G's 129-task run, 28 runs edited protected files (19 unresolved), almost all scratch test files; no gold
+  files. In G's 129-task run, 28 runs edited protected files (19 unresolved), almost all scratch test files; no reference
   patch touches a protected path.
 - Our self-test notebooks recorded only the exit code. From now on each run also saves the harness's test output,
   its error reason and the agent's patch (test_output/ in the notebook output). The V and B self-tests were
@@ -369,19 +369,19 @@ files, and keep every existing test in the module's test file passing."
 
 ## Amendment 17 (recorded 2026-11-14 13:43 MT, before any result of this control)
 
-Gold-patch control, from a senior-review recommendation. In B's self-test, 4 of 10 failures were tests that could
+Reference-fix control, from a senior-review recommendation. In B's self-test, 4 of 10 failures were tests that could
 not import dirty_equals or inline_snapshot, packages absent from the self-test environment and from the organizers'
 wheelhouse, so some self-test failures are unsolvable by any agent. Notebook harness-gold-patch-control-129tasks
-runs the harness's own verify_task, with no model, on every published task twice: with the gold patch and with an
-empty patch. A task is scorable here only if gold resolves and empty does not. From now on every agent self-test rate
+runs the harness's own verify_task, with no model, on every published task twice: with the reference patch and with an
+empty patch. A task is scorable here only if reference patch resolves and empty does not. From now on every agent self-test rate
 is also reported over scorable tasks, and the failure analysis of amendment 14 is redone on them. Smoke run on 3
 tasks first. Arm outcomes of amendment 15 so far: V 4 of 16, B 6 of 16 vs G 5 (p = 1.0 both); by the registered
 rule B joins the combined arm and V does not; F pending.
 
 ### Outcome of amendment 17 (recorded 2026-11-14 14:12 MT)
 
-Gold-patch control on all 129 published tasks, harness verify_task, no model, no errors: the gold patch resolves 75;
-an empty patch resolves 3 (fastapi_14077, fastapi_14851, requests_6644); 72 tasks are scorable (gold passes, empty
+Reference-fix control on all 129 published tasks, harness verify_task, no model, no errors: the reference patch resolves 75;
+an empty patch resolves 3 (fastapi_14077, fastapi_14851, requests_6644); 72 tasks are scorable (reference patch passes, empty
 fails): fastapi 29 of 67, rich 43 of 48, requests 0 of 13, httpx 0 of 1. Every earlier agent rate therefore counted
 57 tasks no agent could solve here and 3 tasks any agent solves with no change; G's 30 of 129 included all 3 free
 tasks. Recomputed over the 72 scorable tasks: G 27 vs N 26 (38 vs 36 percent, p = 1.0); fastapi replicate G 12 vs N
@@ -395,7 +395,7 @@ Files: benchmark/harness_audit/gold_patch_control_129.csv, benchmark/harness_aud
 
 ## Amendment 18 (recorded 2026-11-14 14:46 MT, before any result of this run)
 
-Outcome of F (amendment 15): 0 of 11 new-file tasks for F and for G; F created 0 of the 49 new files the gold fixes add,
+Outcome of F (amendment 15): 0 of 11 new-file tasks for F and for G; F created 0 of the 49 new files the reference fixes add,
 so the rule was not followed; on the 16-task set F 4 vs G 5 (p = 1.0). Only 4 of the 11 new-file tasks are scorable
 locally, so the statement in amendment 14 that these tasks failed because the agent never created the files is
 corrected: 7 of them cannot be solved in this environment. By the amendment 15 rule only B exceeded G, so the combined
@@ -408,8 +408,8 @@ and Pupa gives the go.
 ## Amendment 19 (recorded 2026-11-14 15:01 MT, before any result of this run)
 
 Task-grounded retrieval questions. Query: each published task's problem statement (first 4,000 characters). Target:
-the 8-line chunks overlapping the lines the gold patch changes, in existing non-test .py files outside docs_src. All
-eligible tasks (every task whose gold patch edits such a file), not the 38-task subset of the earlier audit.
+the 8-line chunks overlapping the lines the reference patch changes, in existing non-test .py files outside docs_src. All
+eligible tasks (every task whose reference patch edits such a file), not the 38-task subset of the earlier audit.
 Retrievers: committed BM25 over all chunks; dense bge-small-en-v1.5 at full coverage and at 25 percent of chunks;
 the share of questions whose target is in the 25 percent index is recorded. k = 6. CPU only, no model.
 Primary (retrieval): BM25 vs dense at full coverage, paired, exact McNemar and bootstrap interval. Secondary:
@@ -450,7 +450,7 @@ rerun in full after the 2026-11-21 quota reset, as registered.
 R-E4B vs G-E4B on E4B's 46 scorable tasks, no errors. Gate: the ranker's output listed repository chunks in 44 of 46.
 Primary, resolved: 3 vs 3 (each solved 3 the other did not), exact McNemar p = 1.0; not detected.
 Secondary, localization: tasks whose failure is "never found the right file" fell from 13 to 5; tasks in which the agent
-read or edited a file the gold fix changes rose from 33 to 38 of 46 (7 only R-E4B, 2 only G-E4B, exact McNemar p = 0.18).
+read or edited a file the reference fix changes rose from 33 to 38 of 46 (7 only R-E4B, 2 only G-E4B, exact McNemar p = 0.18).
 Secondary, tokens: median 143,106 vs 113,059 per task, total +15.8 percent, paired Wilcoxon z = +2.23, p = 0.025; the
 prediction (fewer tokens) is contradicted: the ranked search led to more reading. Interpretation, labelled as such:
 better localization did not turn into solved tasks because E4B's remaining failures are wrong fixes (26) in the right
@@ -463,7 +463,7 @@ RC-E4B = submission_v81e4b_rankcheck: identical to R-E4B except one rule before 
 changed file and the module's test file, fix any error the change caused, and submit only when the latest run shows no
 failure the change caused, covering every behavior the issue asks for. Motivation (CPU analysis of R-E4B's 38 non-empty
 failed patches): its own last pytest run was failing at submission in 21; 10 hidden-test failures were syntax,
-indentation, import or name errors; patches were a median 0.3 times the gold patch size. Test: RC-E4B vs R-E4B on the
+indentation, import or name errors; patches were a median 0.3 times the reference patch size. Test: RC-E4B vs R-E4B on the
 same tasks, run in the same environment (Kaggle after the 2026-11-21 quota reset, or a local machine running both arms;
 results from different environments are not pooled). Primary: resolved, exact McNemar, prediction RC-E4B resolves more.
 Secondary: submissions whose own last test run was failing (prediction fewer). A null is reported as not detected.
@@ -482,7 +482,7 @@ File: benchmark/gemma_agent/selftest_results/selftest46_e4b_rank_vs_rankcheck.cs
 ## Amendment 22 (recorded 2026-11-14 21:29 MT, before any result of this run)
 
 D1, retrieval ceiling for the small model (recommendation R33). Same agent as R-E4B (submission_v81e4b_rank, files
-unchanged); each task's problem statement gets one appended line naming the non-test files its gold patch changes. A
+unchanged); each task's problem statement gets one appended line naming the non-test files its reference patch changes. A
 diagnostic only, never submitted, since the scorer gives no such line. Tasks: E4B's 46 scorable tasks. Comparison:
 R-E4B's two earlier runs on the same tasks (3 and 4 resolved), declared non-concurrent. Primary: resolved with the files
 named. Decision rule fixed now: if D1 resolves 10 or more of 46, the limit includes localization the agent could still
@@ -519,7 +519,7 @@ A single score is within reported noise of about two tasks of 58; no difference 
 
 ### Outcome of amendment 19 (recorded 2026-11-15 09:40 MT)
 
-Task-grounded retrieval on 125 competition tasks (eligible: gold patch edits an existing non-test .py file), k = 6.
+Task-grounded retrieval on 125 competition tasks (eligible: reference patch edits an existing non-test .py file), k = 6.
 Hit rates: BM25 0.184 [0.112, 0.256]; dense full 0.312 [0.232, 0.392]; dense at 25 percent 0.248 [0.176, 0.320]; the
 answer was in the 25 percent index for 0.680. Primary, BM25 vs dense at full coverage: 10 vs 26 discordant, exact
 McNemar p = 0.011, dense leads, as on SWE-bench Lite django. Secondary, coverage: dense full vs 25 percent, 17 vs 9,
